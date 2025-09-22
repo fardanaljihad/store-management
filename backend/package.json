@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "src/main.js",
   "scripts": {
-    "test": "jest -i"
+    "test": "NODE_OPTIONS=--trace-warnings jest -i"
   },
   "author": "",
   "license": "ISC",
