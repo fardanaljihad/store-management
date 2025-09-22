@@ -12,3 +12,77 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+enum Role {
+  MANAGER
+  CASHIER
+}
+
+model User {
+  username String @id @db.VarChar(100)
+  password String @db.VarChar(100)
+  role Role @default(CASHIER)
+  token String? @db.VarChar(512)
+  contact Contact?
+  orders Order[]
+
+  @@map("users")
+}
+
+model Contact {
+  id Int @id @default(autoincrement())
+  first_name String @db.VarChar(100)
+  last_name String @db.VarChar(100)
+  email String @db.VarChar(200)
+  phone String @db.VarChar(20)
+  username String @unique @db.VarChar(100)
+  user User @relation(fields: [username], references: [username])
+
+  @@map("contacts")
+}
+
+model Product {
+  id Int @id @default(autoincrement())
+  name String @db.VarChar(100)
+  price Float
+  stock Int
+  created_at DateTime @default(now())
+  updated_at DateTime?
+  category_id Int
+  category Category @relation(fields: [category_id], references: [id])
+  order_line_items OrderLineItem[]
+
+  @@map("products")
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+  name String @unique @db.VarChar(100)
+  products Product[]
+
+  @@map("categories")
+}
+
+model Order {
+  id Int @id @default(autoincrement())
+  username String @db.VarChar(100) 
+  user User @relation(fields: [username], references: [username])
+  created_at DateTime @default(now())
+  updated_at DateTime?
+  order_line_items OrderLineItem[]
+  total Float
+
+  @@map("orders")
+}
+
+model OrderLineItem {
+  id Int @id @default(autoincrement())
+  order_id Int
+  order Order @relation(fields: [order_id], references: [id])
+  product_id Int
+  product Product @relation(fields: [product_id], references: [id])
+  quantity Int
+  subtotal Float
+
+  @@map("order_line_items")
+}
