@@ -1,0 +1,33 @@
+import { prismaClient } from "../src/applications/database.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+export const JWT_SECRET = process.env.JWT_SECRET;
+
+export const removeTestUser = async () => {
+    await prismaClient.user.deleteMany({
+        where: {
+            username: 'test-user'
+        }
+    })
+}
+
+export const createTestUser = async () => {
+    await prismaClient.user.create({
+        data: {
+            username: 'test-user',
+            password: await bcrypt.hash('password', 10)
+        }
+    })
+}
+
+export const generateTestToken = async (payload = { username: "test-user", role: "MANAGER" }) => {
+    return jwt.sign(
+        payload, 
+        JWT_SECRET, 
+        { expiresIn: "1h" }
+    );
+}
