@@ -40,8 +40,22 @@ const getAll = async (req, res, next) => {
     }
 }
 
+const get = async (req, res, next) => {
+    try {
+        const result = await userService.get(req.params.username);
+        res.status(200).json({
+            success: true,
+            message: "Users fetched successfully",
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
 export default {
     register,
     login,
-    getAll
+    getAll,
+    get
 }

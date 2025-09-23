@@ -1,7 +1,7 @@
 import { prismaClient } from "../applications/database.js";
 import { generateToken } from "../auth/jwt.js";
 import { ResponseError } from "../errors/response-error.js";
-import { getAllUsersValidation, loginUserValidation, registerUserValidation } from "../validations/user-validation.js"
+import { getAllUsersValidation, getUserValidation, loginUserValidation, registerUserValidation } from "../validations/user-validation.js"
 import { validate } from "../validations/validation.js"
 import bcrypt from "bcrypt";
 
@@ -98,8 +98,30 @@ const getAll = async (request) => {
     }
 }
 
+const get = async (username) => {
+    username = validate(getUserValidation, username);
+
+    const user = await prismaClient.user.findFirst({
+        where: {
+            username: username
+        },
+        select: {
+            username: true,
+            role: true,
+            contact: true
+        }
+    })
+    
+    if (!user) {
+        throw new ResponseError(404, "User not found");
+    }
+
+    return user;
+}
+
 export default {
     register,
     login,
-    getAll
+    getAll,
+    get
 }

@@ -17,8 +17,11 @@ const getAllUsersValidation = Joi.object({
     role: Joi.string().optional()
 });
 
+const getUserValidation = Joi.string().max(100).required();
+
 export {
     registerUserValidation,
     loginUserValidation,
-    getAllUsersValidation
+    getAllUsersValidation,
+    getUserValidation
 }

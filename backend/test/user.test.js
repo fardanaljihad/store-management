@@ -271,3 +271,53 @@ describe('GET /api/users', function() {
         expect(result.body.errors).toBe("Unauthorized");
     }); 
 })
+
+describe('GET /api/users/:username', function() {
+    beforeEach(async () => {
+        await createTestUser();
+    })
+
+    afterEach(async () => {
+        await removeTestUser();
+    })
+
+    it("should get user by username", async () => {
+        const username = "test-user";
+        const result = await supertest(web)
+            .get(`/api/users/${username}`)
+            .set("Authorization", `Bearer ${await generateTestToken()}`)
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Users fetched successfully");
+        expect(result.body.data.username).toBe("test-user");
+    });
+
+    it("should return not found when username is not found", async () => {
+        const username = "user";
+        const result = await supertest(web)
+            .get(`/api/users/${username}`)
+            .set("Authorization", `Bearer ${await generateTestToken()}`)
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(404);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+
+    it("should reject request when invalid token", async () => {
+        const username = "user";
+        const result = await supertest(web)
+            .get(`/api/users/${username}`)
+            .set("Authorization", `${await generateTestToken()}`)
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(401);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+})

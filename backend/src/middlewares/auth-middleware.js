@@ -5,6 +5,7 @@ export const authMiddleware = async (req, res, next) => {
         const authHeader = req.get("Authorization");
         if (!authHeader) {
             return res.status(401).json({
+                success: false,
                 errors: 'Unauthorized'
             }).end();
         }
@@ -12,6 +13,7 @@ export const authMiddleware = async (req, res, next) => {
         const token = authHeader.split(" ")[1];
         if (!token) {
             return res.status(401).json({
+                success: false,
                 errors: 'Unauthorized'
             }).end();
         }
@@ -21,6 +23,7 @@ export const authMiddleware = async (req, res, next) => {
         next();
     } catch (e) {
         return res.status(401).json({
+            success: false,
             errors: "Unauthorized"
         });
     }
