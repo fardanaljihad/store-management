@@ -181,3 +181,93 @@ describe('POST /api/users/login', function() {
         expect(result.body.errors).toBeDefined();
     })
 })
+
+describe('GET /api/users', function() {
+    beforeEach(async () => {
+        await createTestUser();
+    })
+
+    afterEach(async () => {
+        await removeTestUser();
+    })
+
+    it("should get list of users", async () => {
+        const result = await supertest(web)
+            .get("/api/users")
+            .set("Authorization", `Bearer ${await generateTestToken()}`)
+            .query({ page: 1, limit: 10 });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Users fetched successfully");
+
+        expect(Array.isArray(result.body.data)).toBe(true);
+        expect(result.body.data.length).toBeGreaterThan(0);
+
+        expect(result.body.pagination).toMatchObject({
+            total: expect.any(Number),
+            page: 1,
+            limit: 10
+        });
+    });
+
+    it("should get list of users filtered by role CASHIER", async () => {
+        const result = await supertest(web)
+            .get("/api/users")
+            .set("Authorization", `Bearer ${await generateTestToken()}`)
+            .query({ page: 1, limit: 10, role: "CASHIER" });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Users fetched successfully");
+
+        expect(Array.isArray(result.body.data)).toBe(true);
+        expect(result.body.data.length).toBeGreaterThan(0);
+        result.body.data.forEach(user => {
+            expect(user.role).toBe("CASHIER");
+        });
+
+        expect(result.body.pagination).toMatchObject({
+            total: expect.any(Number),
+            page: 1,
+            limit: 10
+        });
+    });
+
+    it("should return empty list when no users match the role filter", async () => {
+        const result = await supertest(web)
+            .get("/api/users")
+            .set("Authorization", `Bearer ${await generateTestToken()}`)
+            .query({ page: 1, limit: 10, role: "ADMIN" });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Users fetched successfully");
+
+        expect(Array.isArray(result.body.data)).toBe(true);
+        expect(result.body.data.length).toBe(0);
+
+        expect(result.body.pagination).toMatchObject({
+            total: 0,
+            page: 1,
+            limit: 10
+        });
+    });
+
+    it("should reject request when no token is provided", async () => {
+        const result = await supertest(web)
+            .get("/api/users")
+            .query({ page: 1, limit: 10, role: "CASHIER" });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(401);
+        expect(result.body.errors).toBe("Unauthorized");
+    }); 
+})

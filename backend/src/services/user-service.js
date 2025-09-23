@@ -1,7 +1,7 @@
 import { prismaClient } from "../applications/database.js";
 import { generateToken } from "../auth/jwt.js";
 import { ResponseError } from "../errors/response-error.js";
-import { loginUserValidation, registerUserValidation } from "../validations/user-validation.js"
+import { getAllUsersValidation, loginUserValidation, registerUserValidation } from "../validations/user-validation.js"
 import { validate } from "../validations/validation.js"
 import bcrypt from "bcrypt";
 
@@ -56,7 +56,50 @@ const login = async (request) => {
     return { "token": token  };
 }
 
+const getAll = async (request) => {
+    const params = validate(getAllUsersValidation, request);
+    const page = params.page || 1;
+    const limit = params.limit || 10;
+    const role = params.role;
+
+    const validRoles = ["MANAGER", "CASHIER"];
+    if (role && !validRoles.includes(role)) {
+        return {
+            data: [],
+            pagination: {
+                total: 0,
+                page,
+                limit
+            }
+        };
+    }
+    
+    const where = role ? { role } : {};
+    const skip = (page - 1) * limit;
+
+    const total = await prismaClient.user.count({ where });
+    
+    const users = await prismaClient.user.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+            contact: true
+        }
+    });
+
+    return {
+        data: users,
+        pagination: {
+            total: total,
+            page: page,
+            limit: limit
+        }
+    }
+}
+
 export default {
     register,
-    login
+    login,
+    getAll
 }

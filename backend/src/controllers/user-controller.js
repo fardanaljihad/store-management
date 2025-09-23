@@ -26,7 +26,22 @@ const login = async (req, res, next) => {
     }
 }
 
+const getAll = async (req, res, next) => {
+    try {
+        const result = await userService.getAll(req.query);
+        res.status(200).json({
+            success: true,
+            message: "Users fetched successfully",
+            data: result.data,
+            pagination: result.pagination
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
 export default {
     register,
-    login
+    login,
+    getAll
 }
