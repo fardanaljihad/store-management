@@ -206,3 +206,45 @@ describe('PATCH /api/categories/:id', function() {
         expect(result.body.errors).toBeDefined();
     });
 })
+
+describe('DELETE /api/categories/:id', function() {
+
+    beforeEach(async () => {
+        await createTestCategory();
+    })
+    
+    afterEach(async () => {
+        await removeTestCategory();
+    })
+
+    it('should delete category', async () => {
+        const token = await generateTestToken();
+        const category = await getTestCategory();
+        const id = category.id;
+
+        const result = await supertest(web)
+            .delete(`/api/categories/${id}`)
+            .set('Authorization', `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Category deleted successfully");
+        expect(result.body.data.name).toBe("test-category");
+    });
+
+    it('should not update category when token is not provided', async () => {
+        const category = await getTestCategory();
+        const id = category.id;
+
+        const result = await supertest(web)
+            .delete(`/api/categories/${id}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(401);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+})

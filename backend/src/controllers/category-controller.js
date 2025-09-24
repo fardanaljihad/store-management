@@ -57,9 +57,24 @@ const update = async (req, res, next) => {
     }
 }
 
+const deleteCategory = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const result = await categoryService.deleteCategory(id);
+        res.status(200).json({
+            success: true,
+            message: "Category deleted successfully",
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
 export default {
     create,
     getAll,
     get,
-    update
+    update,
+    deleteCategory
 }

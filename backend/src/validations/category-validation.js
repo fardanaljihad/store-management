@@ -16,9 +16,12 @@ const updateCategoryValidation = Joi.object({
     name: Joi.string().max(100).required()
 });
 
+const deleteCategoryValidation = Joi.number().integer().min(1).required();
+
 export {
     createCategoryValidation,
     getAllCategoriesValidation,
     getCategoryValidation,
-    updateCategoryValidation
+    updateCategoryValidation,
+    deleteCategoryValidation
 }

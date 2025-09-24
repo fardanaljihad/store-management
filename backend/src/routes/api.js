@@ -18,6 +18,7 @@ categoryRouter.post('/api/categories', categoryController.create);
 categoryRouter.get('/api/categories', categoryController.getAll);
 categoryRouter.get('/api/categories/:id', categoryController.get);
 categoryRouter.patch('/api/categories/:id', categoryController.update);
+categoryRouter.delete('/api/categories/:id', categoryController.deleteCategory);
 
 export {
     userRouter,
