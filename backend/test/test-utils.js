@@ -55,3 +55,11 @@ export const createTestCategory = async () => {
         }
     })
 }
+
+export const getTestCategory = async () => {
+    return await prismaClient.category.findUnique({
+        where: {
+            name: 'test-category'
+        }
+    })
+}

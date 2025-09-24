@@ -1,5 +1,5 @@
 import supertest from "supertest";
-import { createTestCategory, generateTestToken, removeTestCategory } from "./test-utils.js";
+import { createTestCategory, generateTestToken, getTestCategory, removeTestCategory } from "./test-utils.js";
 import { logger } from "../src/applications/logging.js";
 import { web } from "../src/applications/web.js";
 
@@ -80,5 +80,58 @@ describe('GET /api/categories', function() {
             page: 1,
             limit: 10
         });
+    });
+
+    it('should not get categories', async () => {
+        const result = await supertest(web)
+            .get('/api/categories')
+            .query({ page: 1, limit: 10 });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(401);
+        expect(result.body.errors).toBeDefined();
+    });
+})
+
+describe('GET /api/categories/:id', function() {
+
+    beforeEach(async () => {
+        await createTestCategory();
+    })
+    
+    afterEach(async () => {
+        await removeTestCategory();
+    })
+
+    it('should get category by id', async () => {
+        const token = await generateTestToken();
+        const category = await getTestCategory();
+        const id = category.id;
+
+        const result = await supertest(web)
+            .get(`/api/categories/${id}`)
+            .set('Authorization', `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Category fetched successfully");
+        expect(result.body.data.name).toBe("test-category");
+    });
+
+    it('should not get category when id is not found', async () => {
+        const token = await generateTestToken();
+
+        const result = await supertest(web)
+            .get(`/api/categories/99999`)
+            .set('Authorization', `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(404);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
     });
 })
