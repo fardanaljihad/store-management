@@ -1,7 +1,8 @@
 import express from "express";
 import userController from "../controllers/user-controller.js";
-import { authMiddleware } from "../middlewares/auth-middleware.js";
+import { authMiddleware, permittedRoles } from "../middlewares/auth-middleware.js";
 import categoryController from "../controllers/category-controller.js";
+import productController from "../controllers/product-controller.js";
 
 const userRouter = express.Router();
 userRouter.use(authMiddleware);
@@ -20,7 +21,12 @@ categoryRouter.get('/api/categories/:id', categoryController.get);
 categoryRouter.patch('/api/categories/:id', categoryController.update);
 categoryRouter.delete('/api/categories/:id', categoryController.deleteCategory);
 
+const productRouter = express.Router();
+productRouter.use(authMiddleware);
+productRouter.post('/api/products', permittedRoles(["MANAGER"]), productController.create);
+
 export {
     userRouter,
-    categoryRouter
+    categoryRouter,
+    productRouter
 }

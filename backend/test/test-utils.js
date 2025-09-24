@@ -66,3 +66,14 @@ export const getTestCategory = async () => {
         }
     })
 }
+
+export const removeTestProduct = async () => {
+    await prismaClient.product.deleteMany({
+        where: {
+            OR: [
+                { name: "test-product" },
+                { name: "updated-product" }
+            ]
+        }
+    })
+}

@@ -1,6 +1,6 @@
 import { verifyToken } from "../auth/jwt.js";
 
-export const authMiddleware = async (req, res, next) => {
+export const authMiddleware = (req, res, next) => {
     try {
         const authHeader = req.get("Authorization");
         if (!authHeader) {
@@ -28,3 +28,15 @@ export const authMiddleware = async (req, res, next) => {
         });
     }
 }
+
+export const permittedRoles = (roles = []) => {
+    return (req, res, next) => {
+        if (!req.user || !roles.includes(req.user.role)) {
+            return res.status(403).json({
+                success: false,
+                errors: "Unauthorized"
+            });
+        }
+        next();
+    };
+};
