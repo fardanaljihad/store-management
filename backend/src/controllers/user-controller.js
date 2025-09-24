@@ -1,4 +1,3 @@
-import { log } from "winston";
 import userService from "../services/user-service.js"
 
 const register = async (req, res, next) => {

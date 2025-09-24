@@ -47,3 +47,11 @@ export const removeTestCategory = async () => {
         }
     })
 }
+
+export const createTestCategory = async () => {
+    await prismaClient.category.create({
+        data: {
+            name: 'test-category'
+        }
+    })
+}

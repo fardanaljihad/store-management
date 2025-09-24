@@ -15,6 +15,7 @@ userRouter.delete('/api/users/:username', userController.deleteUser);
 const categoryRouter = express.Router();
 categoryRouter.use(authMiddleware);
 categoryRouter.post('/api/categories', categoryController.create);
+categoryRouter.get('/api/categories', categoryController.getAll);
 
 export {
     userRouter,
