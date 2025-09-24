@@ -70,10 +70,25 @@ const update = async (req, res, next) => {
     }
 }
 
+const deleteUser = async (req, res, next) => {
+    try {
+        const { username } = req.params;
+        const result = await userService.deleteUser(username);
+        res.status(200).json({
+            success: true,
+            message: "User deleted successfully",
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
 export default {
     register,
     login,
     getAll,
     get,
-    update
+    update,
+    deleteUser
 }

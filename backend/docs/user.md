@@ -195,7 +195,7 @@ Response Body Error:
 }
 ```
 
-## Update User
+## Delete User
 
 Endpoint: DELETE /api/users/{username}
 

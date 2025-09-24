@@ -25,10 +25,13 @@ const updateUserValidation = Joi.object({
     role: Joi.string().valid("CASHIER", "MANAGER").optional()
 });
 
+const deleteUserValidation = Joi.string().max(100).required();
+
 export {
     registerUserValidation,
     loginUserValidation,
     getAllUsersValidation,
     getUserValidation,
-    updateUserValidation
+    updateUserValidation,
+    deleteUserValidation
 }

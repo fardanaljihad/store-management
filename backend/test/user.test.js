@@ -22,7 +22,7 @@ describe('POST /api/users', function() {
                 role: 'MANAGER'
             });
 
-        logger.info(result);
+        logger.info(result.body);
         
         expect(result.status).toBe(200);
         expect(result.body.data.username).toBe('test-user');
@@ -343,7 +343,7 @@ describe('PATCH /api/users/:username', function() {
                 password: 'newpassword'
             });
 
-        logger.info(result);
+        logger.info(result.body);
         
         expect(result.status).toBe(200);
         expect(result.body.data.username).toBe('test-user');
@@ -365,7 +365,7 @@ describe('PATCH /api/users/:username', function() {
                 role: 'MANAGER'
             });
 
-        logger.info(result);
+        logger.info(result.body);
         
         expect(result.status).toBe(200);
         expect(result.body.data.username).toBe('test-user');
@@ -385,10 +385,67 @@ describe('PATCH /api/users/:username', function() {
                 role: ''
             });
 
-        logger.info(result);
+        logger.info(result.body);
         
         expect(result.status).toBe(400);
         expect(result.body.errors).toBeDefined();
     });
 
+});
+
+describe('DELETE /api/users/:username', function() {
+    beforeEach(async () => {
+        await createTestUser();
+    })
+
+    afterEach(async () => {
+        await removeTestUser();
+    })
+
+    it('should delete user', async () => {
+        const token = await generateTestToken();
+        const username = "test-user";
+
+        const result = await supertest(web)
+            .delete(`/api/users/${username}`)
+            .set('Authorization', `Bearer ${token}`);
+        
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("User deleted successfully");
+        expect(result.body.data.username).toBe("test-user");
+        expect(result.body.data.role).toBe("CASHIER");
+    });
+
+    it('should reject delete user', async () => {
+        const token = await generateTestToken();
+        const username = "test-";
+
+        const result = await supertest(web)
+            .delete(`/api/users/${username}`)
+            .set('Authorization', `Bearer ${token}`);
+        
+        logger.info(result.body);
+
+        expect(result.status).toBe(404);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+
+    it('should reject delete user when token invalid', async () => {
+        const token = await generateTestToken();
+        const username = "test-";
+
+        const result = await supertest(web)
+            .delete(`/api/users/${username}`)
+            .set('Authorization', `${token}`);
+        
+        logger.info(result.body);
+
+        expect(result.status).toBe(401);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
 });

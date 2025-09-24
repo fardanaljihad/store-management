@@ -1,7 +1,7 @@
 import { prismaClient } from "../applications/database.js";
 import { generateToken } from "../auth/jwt.js";
 import { ResponseError } from "../errors/response-error.js";
-import { getAllUsersValidation, getUserValidation, loginUserValidation, registerUserValidation, updateUserValidation } from "../validations/user-validation.js";
+import { deleteUserValidation, getAllUsersValidation, getUserValidation, loginUserValidation, registerUserValidation, updateUserValidation } from "../validations/user-validation.js";
 import { validate } from "../validations/validation.js";
 import bcrypt from "bcrypt";
 
@@ -155,10 +155,35 @@ const update = async (request) => {
     });
 }
 
+const deleteUser = async (username) => {
+    username = validate(deleteUserValidation, username);
+
+    const isUserExists = await prismaClient.user.findUnique({
+        where: {
+            username: username
+        }
+    });
+
+    if (!isUserExists) {
+        throw new ResponseError(404, "User not found");
+    }
+
+    return prismaClient.user.delete({
+        where: {
+            username: username
+        },
+        select: {
+            username: true,
+            role: true
+        }
+    });
+}
+
 export default {
     register,
     login,
     getAll,
     get,
-    update
+    update,
+    deleteUser
 }
