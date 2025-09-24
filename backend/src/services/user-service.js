@@ -1,8 +1,8 @@
 import { prismaClient } from "../applications/database.js";
 import { generateToken } from "../auth/jwt.js";
 import { ResponseError } from "../errors/response-error.js";
-import { getAllUsersValidation, getUserValidation, loginUserValidation, registerUserValidation } from "../validations/user-validation.js"
-import { validate } from "../validations/validation.js"
+import { getAllUsersValidation, getUserValidation, loginUserValidation, registerUserValidation, updateUserValidation } from "../validations/user-validation.js";
+import { validate } from "../validations/validation.js";
 import bcrypt from "bcrypt";
 
 const register = async (request) => {
@@ -119,9 +119,46 @@ const get = async (username) => {
     return user;
 }
 
+const update = async (request) => {
+    const user = validate(updateUserValidation, request);
+
+    const isUserExists = await prismaClient.user.findUnique({
+        where: {
+            username: user.username
+        }
+    });
+
+    console.log(request);
+    
+    
+    if (!isUserExists) {
+        throw new ResponseError(404, "User not found");
+    }
+
+    const data = {};
+    if (user.password) {
+        data.password = await bcrypt.hash(user.password, 10);
+    }
+    if (user.role) {
+        data.role = user.role;
+    }
+
+    return prismaClient.user.update({
+        where: {
+            username: user.username
+        },
+        data: data,
+        select: {
+            username: true,
+            role: true
+        }
+    });
+}
+
 export default {
     register,
     login,
     getAll,
-    get
+    get,
+    update
 }

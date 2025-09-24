@@ -1,7 +1,8 @@
 import supertest from "supertest";
 import { web } from "../src/applications/web.js"
 import { logger } from "../src/applications/logging.js";
-import { createTestUser, generateTestToken, removeTestUser } from "./test-utils.js";
+import { createTestUser, generateTestToken, getTestUser, removeTestUser } from "./test-utils.js";
+import bcrypt from "bcrypt";
 
 describe('POST /api/users', function() {
 
@@ -321,3 +322,73 @@ describe('GET /api/users/:username', function() {
         expect(result.body.errors).toBeDefined();
     });
 })
+
+describe('PATCH /api/users/:username', function() {
+    beforeEach(async () => {
+        await createTestUser();
+    })
+
+    afterEach(async () => {
+        await removeTestUser();
+    })
+
+    it('should update user password', async () => {
+        const token = await generateTestToken();
+        const username = "test-user";
+
+        const result = await supertest(web)
+            .patch(`/api/users/${username}`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                password: 'newpassword'
+            });
+
+        logger.info(result);
+        
+        expect(result.status).toBe(200);
+        expect(result.body.data.username).toBe('test-user');
+        expect(result.body.data.password).toBeUndefined();
+        expect(result.body.data.role).toBe('CASHIER');
+
+        const user = await getTestUser();
+        expect(await bcrypt.compare('newpassword', user.password)).toBe(true);
+    });
+
+    it('should update user role', async () => {
+        const token = await generateTestToken();
+        const username = "test-user";
+
+        const result = await supertest(web)
+            .patch(`/api/users/${username}`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                role: 'MANAGER'
+            });
+
+        logger.info(result);
+        
+        expect(result.status).toBe(200);
+        expect(result.body.data.username).toBe('test-user');
+        expect(result.body.data.password).toBeUndefined();
+        expect(result.body.data.role).toBe('MANAGER');
+    });
+
+    it('should reject user update when request body is invalid', async () => {
+        const token = await generateTestToken();
+        const username = "test-user";
+
+        const result = await supertest(web)
+            .patch(`/api/users/${username}`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                password: '',
+                role: ''
+            });
+
+        logger.info(result);
+        
+        expect(result.status).toBe(400);
+        expect(result.body.errors).toBeDefined();
+    });
+
+});

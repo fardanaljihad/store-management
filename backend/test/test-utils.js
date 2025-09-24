@@ -31,3 +31,11 @@ export const generateTestToken = async (payload = { username: "test-user", role:
         { expiresIn: "1h" }
     );
 }
+
+export const getTestUser = async () => {
+    return await prismaClient.user.findUnique({
+        where: {
+            username: 'test-user'
+        }
+    })
+}
