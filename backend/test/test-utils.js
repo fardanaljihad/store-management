@@ -77,3 +77,14 @@ export const removeTestProduct = async () => {
         }
     })
 }
+
+export const createTestProduct = async (category_id) => {
+    await prismaClient.product.create({
+        data: {
+            name: "test-product",
+            price: 3500,
+            stock: 100,
+            category_id: category_id
+        }
+    });
+}

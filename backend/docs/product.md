@@ -100,8 +100,7 @@
 ```json
 {
     "success": false,
-    "message": "Product not found",
-    "errors": "No product with name chuba"
+    "errors": "Unauthorized"
 }
 ```
 

@@ -57,10 +57,10 @@ const login = async (request) => {
 }
 
 const getAll = async (request) => {
-    const params = validate(getAllUsersValidation, request);
-    const page = params.page || 1;
-    const limit = params.limit || 10;
-    const role = params.role;
+    const query = validate(getAllUsersValidation, request);
+    const page = query.page;
+    const limit = query.limit;
+    const role = query.role;
 
     const validRoles = ["MANAGER", "CASHIER"];
     if (role && !validRoles.includes(role)) {

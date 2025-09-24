@@ -7,6 +7,14 @@ const createProductValidation = Joi.object({
     category_id: Joi.number().integer().positive().required()
 });
 
+const getAllProductsValidation = Joi.object({
+    page: Joi.number().integer().positive().default(1),
+    limit: Joi.number().integer().positive().default(10),
+    category_id: Joi.number().integer().positive().optional(),
+    name: Joi.string().max(100).optional(),
+});
+
 export {
-    createProductValidation
+    createProductValidation,
+    getAllProductsValidation
 }
