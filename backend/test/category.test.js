@@ -135,3 +135,74 @@ describe('GET /api/categories/:id', function() {
         expect(result.body.errors).toBeDefined();
     });
 })
+
+describe('PATCH /api/categories/:id', function() {
+
+    beforeEach(async () => {
+        await createTestCategory();
+    })
+    
+    afterEach(async () => {
+        await removeTestCategory();
+    })
+
+    it('should update category', async () => {
+        const token = await generateTestToken();
+        const category = await getTestCategory();
+        const id = category.id;
+
+        const result = await supertest(web)
+            .patch(`/api/categories/${id}`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                name: "updated-category"
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Category updated successfully");
+        expect(result.body.data.name).toBe("updated-category");
+    });
+
+    it('should not update category when id is not found', async () => {
+        const token = await generateTestToken();
+
+        const result = await supertest(web)
+            .get(`/api/categories/99999`)
+            .set('Authorization', `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(404);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+
+    it('should not update category when name already taken', async () => {
+        const token = await generateTestToken();
+        const category = await getTestCategory();
+        const id = category.id;
+
+        let result = await supertest(web)
+            .post('/api/categories')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                name: "updated-category"
+            });
+
+        result = await supertest(web)
+            .patch(`/api/categories/${id}`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                name: "updated-category"
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(400);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+})

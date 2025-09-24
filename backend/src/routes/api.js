@@ -17,6 +17,7 @@ categoryRouter.use(authMiddleware);
 categoryRouter.post('/api/categories', categoryController.create);
 categoryRouter.get('/api/categories', categoryController.getAll);
 categoryRouter.get('/api/categories/:id', categoryController.get);
+categoryRouter.patch('/api/categories/:id', categoryController.update);
 
 export {
     userRouter,

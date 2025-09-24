@@ -9,10 +9,16 @@ const getAllCategoriesValidation = Joi.object({
     limit: Joi.number().integer().min(1).default(10)
 });
 
-const getCategoryValidation = Joi.number().integer().required();
+const getCategoryValidation = Joi.number().integer().min(1).required();
+
+const updateCategoryValidation = Joi.object({
+    id: Joi.number().integer().min(1).required(),
+    name: Joi.string().max(100).required()
+});
 
 export {
     createCategoryValidation,
     getAllCategoriesValidation,
-    getCategoryValidation
+    getCategoryValidation,
+    updateCategoryValidation
 }

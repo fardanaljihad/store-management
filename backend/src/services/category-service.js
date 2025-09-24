@@ -1,6 +1,6 @@
 import { prismaClient } from "../applications/database";
 import { ResponseError } from "../errors/response-error.js";
-import { createCategoryValidation, getAllCategoriesValidation, getCategoryValidation } from "../validations/category-validation.js";
+import { createCategoryValidation, getAllCategoriesValidation, getCategoryValidation, updateCategoryValidation } from "../validations/category-validation.js";
 import { validate } from "../validations/validation.js";
 
 const create = async (request) => {
@@ -63,8 +63,42 @@ const get = async (id) => {
     return category;
 }
 
+const update = async (request) => {
+    const category = validate(updateCategoryValidation, request);
+
+    const isCategoryExists = await prismaClient.category.findUnique({
+        where: {
+            id: category.id
+        }
+    });
+
+    if (!isCategoryExists) {
+        throw new ResponseError(404, "Category not found");
+    }
+
+    const isNameExists = await prismaClient.category.findUnique({
+        where: {
+            name: category.name
+        }
+    })
+
+    if (isNameExists) {
+        throw new ResponseError(400, "Category name already exists");
+    }
+
+    return prismaClient.category.update({
+        where: {
+            id: category.id
+        },
+        data: {
+            name: category.name
+        }
+    });
+}
+
 export default {
     create,
     getAll,
-    get
+    get,
+    update
 }

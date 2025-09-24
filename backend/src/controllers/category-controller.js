@@ -41,8 +41,25 @@ const get = async (req, res, next) => {
     }
 }
 
+const update = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const request = req.body;
+        request.id = id;
+        const result = await categoryService.update(request);
+        res.status(200).json({
+            success: true,
+            message: "Category updated successfully",
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
 export default {
     create,
     getAll,
-    get
+    get,
+    update
 }
