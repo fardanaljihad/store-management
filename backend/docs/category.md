@@ -20,7 +20,6 @@ Response Body Success:
   "success": true,
   "message": "Category created successfully",
   "data": {
-    "id": 1,
     "name": "Beverages"
   }
 }

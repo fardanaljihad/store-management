@@ -127,9 +127,6 @@ const update = async (request) => {
             username: user.username
         }
     });
-
-    console.log(request);
-    
     
     if (!isUserExists) {
         throw new ResponseError(404, "User not found");

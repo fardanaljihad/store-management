@@ -1,6 +1,7 @@
 import express from "express";
 import userController from "../controllers/user-controller.js";
 import { authMiddleware } from "../middlewares/auth-middleware.js";
+import categoryController from "../controllers/category-controller.js";
 
 const userRouter = express.Router();
 userRouter.use(authMiddleware);
@@ -11,6 +12,11 @@ userRouter.get('/api/users/:username', userController.get);
 userRouter.patch('/api/users/:username', userController.update);
 userRouter.delete('/api/users/:username', userController.deleteUser);
 
+const categoryRouter = express.Router();
+categoryRouter.use(authMiddleware);
+categoryRouter.post('/api/categories', categoryController.create);
+
 export {
-    userRouter
+    userRouter,
+    categoryRouter
 }
