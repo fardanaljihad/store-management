@@ -3,6 +3,7 @@ import userController from "../controllers/user-controller.js";
 import { authMiddleware, permittedRoles } from "../middlewares/auth-middleware.js";
 import categoryController from "../controllers/category-controller.js";
 import productController from "../controllers/product-controller.js";
+import contactController from "../controllers/contact-controller.js";
 
 const userRouter = express.Router();
 userRouter.use(authMiddleware);
@@ -29,8 +30,13 @@ productRouter.get('/api/products/:id', productController.get);
 productRouter.patch('/api/products/:id', productController.update);
 productRouter.delete('/api/products/:id', permittedRoles(["MANAGER"]), productController.del);
 
+const contactRouter = express.Router();
+contactRouter.use(authMiddleware);
+contactRouter.post('/api/users/:username/contacts', contactController.create);
+
 export {
     userRouter,
     categoryRouter,
-    productRouter
+    productRouter,
+    contactRouter
 }

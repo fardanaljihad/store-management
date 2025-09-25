@@ -96,3 +96,26 @@ export const getTestProduct = async () => {
         }
     })
 }
+
+export const removeTestContact = async () => {
+    await prismaClient.contact.deleteMany({
+        where: {
+            OR: [
+                { email: "test-contact@example.com" },
+                { email: "updated-contact@example.com" }
+            ]
+    }
+    })
+}
+
+export const createTestContact = async (username) => {
+    await prismaClient.contact.create({
+        data: {
+            first_name: "test-contact",
+            last_name: "test-contact",
+            email: "test-contact@example.com",
+            phone: "1234567890",
+            username: username
+        }
+    });
+}
