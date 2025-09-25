@@ -204,15 +204,7 @@
     "message": "Product deleted successfully",
     "data": {
         "id": 1,
-        "name": "Indomie Goreng",
-        "price": 3500,
-        "stock": 100,
-        "category": {
-            "id": 1,
-            "name": "Makanan"
-        },
-        "created_at": "2025-09-22T10:00:00.000Z",
-        "updated_at": null
+        "name": "Indomie Goreng"
     }
 }
 ```
