@@ -158,3 +158,75 @@ describe('GET /api/users/:username/contacts', function() {
     });
 
 });
+
+describe('PATCH /api/users/:username/contacts', function() {
+
+    beforeEach(async () => {
+        await createTestUser();
+        const user = await getTestUser();
+
+        await createTestContact(user.username);
+    });
+        
+    afterEach(async () => {
+        await removeTestContact();
+        await removeTestUser();
+    });
+    
+    it('should update contact email', async () => {
+        const token = await generateTestToken();
+        const user = await getTestUser();
+
+        const result = await supertest(web)
+            .patch(`/api/users/${user.username}/contacts`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                email: "updated-contact@example.com"
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Contact updated successfully");
+        expect(result.body.data.email).toBe("updated-contact@example.com");
+        expect(result.body.data.username).toBe(user.username);
+    });
+
+    it('should fail update contact when contact not found', async () => {
+        const token = await generateTestToken();
+
+        const result = await supertest(web)
+            .patch(`/api/users/fake-username/contacts`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                first_name: "Updated",
+                last_name: "Contact"
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(404);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+
+    it('should fail update contact when email is invalid', async () => {
+        const token = await generateTestToken();
+        const user = await getTestUser();
+
+        const result = await supertest(web)
+            .patch(`/api/users/${user.username}/contacts`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                email: "invalid-email"
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(400);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+
+});
