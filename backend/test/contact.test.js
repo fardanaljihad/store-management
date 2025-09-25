@@ -1,5 +1,5 @@
 import supertest from "supertest";
-import { createTestUser, generateTestToken, getTestUser, removeTestContact, removeTestUser } from "./test-utils";
+import { createTestContact, createTestUser, generateTestToken, getTestUser, removeTestContact, removeTestUser } from "./test-utils";
 import { logger } from "../src/applications/logging.js";
 import { web } from "../src/applications/web.js";
 
@@ -69,6 +69,46 @@ describe('POST /api/users/:username/contacts', function() {
         expect(result.status).toBe(400);
         expect(result.body.success).toBe(false);
         expect(result.body.errors).toBeDefined();
+    });
+
+});
+
+describe('GET /api/contacts', function() {
+
+    beforeEach(async () => {
+        await createTestUser();
+        const user = await getTestUser();
+
+        await createTestContact(user.username);
+    });
+        
+    afterEach(async () => {
+        await removeTestContact();
+        await removeTestUser();
+    });
+    
+    it('should get list of contacts', async () => {
+        const token = await generateTestToken();
+
+        const result = await supertest(web)
+            .get(`/api/contacts`)
+            .set('Authorization', `Bearer ${token}`)
+            .query({ page: 1, limit: 10 });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Contacts fetched successfully");
+
+        expect(Array.isArray(result.body.data)).toBe(true);
+        expect(result.body.data.length).toBeGreaterThan(0);
+
+        expect(result.body.pagination).toMatchObject({
+            total: expect.any(Number),
+            page: 1,
+            limit: 10
+        });
     });
 
 });

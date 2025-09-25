@@ -33,6 +33,7 @@ productRouter.delete('/api/products/:id', permittedRoles(["MANAGER"]), productCo
 const contactRouter = express.Router();
 contactRouter.use(authMiddleware);
 contactRouter.post('/api/users/:username/contacts', contactController.create);
+contactRouter.get('/api/contacts', contactController.getAll);
 
 export {
     userRouter,

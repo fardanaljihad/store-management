@@ -1,6 +1,6 @@
 import { prismaClient } from "../applications/database.js";
 import { ResponseError } from "../errors/response-error.js";
-import { createContactValidation } from "../validations/contact-validation";
+import { createContactValidation, getAllContactsValidation } from "../validations/contact-validation";
 import { getUserValidation } from "../validations/user-validation.js"
 import { validate } from "../validations/validation.js"
 
@@ -32,6 +32,26 @@ const create = async (username, request) => {
     });
 }
 
+const getAll = async (request) => {
+    const { page, limit } = validate(getAllContactsValidation, request);
+    const skip = (page - 1) * limit;
+
+    const contacts = await prismaClient.contact.findMany({
+        skip,
+        take: limit
+    });
+
+    return {
+        data: contacts,
+        pagination: {
+            total: contacts.length,
+            page,
+            limit,
+        }
+    }
+}
+
 export default {
-    create
+    create,
+    getAll
 }
