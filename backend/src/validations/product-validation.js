@@ -16,8 +16,16 @@ const getAllProductsValidation = Joi.object({
 
 const getProductValidation = Joi.number().integer().positive().required();
 
+const updateProductValidation = Joi.object({
+    name: Joi.string().max(100).optional(),
+    price: Joi.number().positive().optional(),
+    stock: Joi.number().integer().min(0).optional(),
+    category_id: Joi.number().integer().positive().optional()
+});
+
 export {
     createProductValidation,
     getAllProductsValidation,
-    getProductValidation
+    getProductValidation,
+    updateProductValidation
 }

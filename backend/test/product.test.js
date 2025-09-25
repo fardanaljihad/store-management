@@ -83,7 +83,7 @@ describe('POST /api/products', function() {
     });
 });
 
-describe('GET /api/users', function() {
+describe('GET /api/products', function() {
     
     beforeEach(async () => {
         await createTestCategory();
@@ -190,7 +190,7 @@ describe('GET /api/users', function() {
     });
 });
 
-describe('GET /api/users', function() {
+describe('GET /api/products/:id', function() {
     
     beforeEach(async () => {
         await createTestCategory();
@@ -250,6 +250,161 @@ describe('GET /api/users', function() {
         logger.info(result.body);
 
         expect(result.status).toBe(401);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+});
+
+describe('PATCH /api/products/:id', function() {
+    
+    beforeEach(async () => {
+        await createTestCategory();
+        
+        const category = await getTestCategory();
+
+        await createTestProduct(category.id);
+    });
+        
+    afterEach(async () => {
+        await removeTestProduct();
+        await removeTestCategory();
+    });
+
+    it("should update product name", async () => {
+        const token = await generateTestToken();
+        const product = await getTestProduct();
+
+        const result = await supertest(web)
+            .patch(`/api/products/${product.id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                name: "updated-product"
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Product updated successfully");
+        expect(result.body.data.name).toBe("updated-product");
+        expect(result.body.data.updated_at).not.toBeNull();
+    });
+
+    it("should update product price", async () => {
+        const token = await generateTestToken();
+        const product = await getTestProduct();
+
+        const result = await supertest(web)
+            .patch(`/api/products/${product.id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                price: 5000
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Product updated successfully");
+        expect(result.body.data.price).toBe(5000);
+        expect(result.body.data.updated_at).not.toBeNull();
+    });
+
+    it("should update product stock", async () => {
+        const token = await generateTestToken();
+        const product = await getTestProduct();
+
+        const result = await supertest(web)
+            .patch(`/api/products/${product.id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                stock: 90
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Product updated successfully");
+        expect(result.body.data.stock).toBe(90);
+        expect(result.body.data.updated_at).toBeDefined();
+        expect(result.body.data.updated_at).not.toBeNull();
+    });
+
+    it("should update product", async () => {
+        const token = await generateTestToken();
+        const product = await getTestProduct();
+
+        const result = await supertest(web)
+            .patch(`/api/products/${product.id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                name: "updated-product",
+                price: 5000,
+                stock: 90
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Product updated successfully");
+        expect(result.body.data.name).toBe("updated-product");
+        expect(result.body.data.price).toBe(5000);
+        expect(result.body.data.stock).toBe(90);
+        expect(result.body.data.updated_at).not.toBeNull();
+    });
+
+    it("should reject update product when price not valid", async () => {
+        const token = await generateTestToken();
+        const product = await getTestProduct();
+
+        const result = await supertest(web)
+            .patch(`/api/products/${product.id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                price: -1
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(400);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+
+    it("should reject update product when stock not valid", async () => {
+        const token = await generateTestToken();
+        const product = await getTestProduct();
+
+        const result = await supertest(web)
+            .patch(`/api/products/${product.id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                stock: -1
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(400);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+
+    it("should reject update product when category id not found", async () => {
+        const token = await generateTestToken();
+        const product = await getTestProduct();
+
+        const result = await supertest(web)
+            .patch(`/api/products/${product.id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+                category_id: 9999999
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(404);
         expect(result.body.success).toBe(false);
         expect(result.body.errors).toBeDefined();
     });

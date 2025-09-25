@@ -1,6 +1,7 @@
 import { prismaClient } from "../applications/database.js";
 import { ResponseError } from "../errors/response-error.js";
-import { createProductValidation, getAllProductsValidation, getProductValidation } from "../validations/product-validation.js"
+import { getCategoryValidation } from "../validations/category-validation.js";
+import { createProductValidation, getAllProductsValidation, getProductValidation, updateProductValidation } from "../validations/product-validation.js"
 import { validate } from "../validations/validation.js"
 
 const create = async (request) => {
@@ -99,8 +100,69 @@ const get = async (id) => {
     return product;
 }
 
+const update = async (id, request) => {
+    const productId = validate(getProductValidation, id);
+
+    const isProductExists = await prismaClient.product.findUnique({
+        where: {
+            id: productId
+        }
+    });
+
+    if (!isProductExists) {
+        throw new ResponseError(404, "Product not found");
+    }
+
+    const product = validate(updateProductValidation, request);
+
+    const data = {};
+    if (product.name) {
+        data.name = product.name;
+    }
+    if (product.price) {
+        data.price = product.price;
+    }
+    if (product.stock) {
+        data.stock = product.stock;
+    }
+    if (product.category_id) {
+        const categoryId = validate(getCategoryValidation, product.category_id);
+
+        const isCategoryExists = await prismaClient.category.findUnique({
+            where: {
+                id: categoryId
+            }
+        });
+
+        if (!isCategoryExists) {
+            throw new ResponseError(404, "Category not found");
+        }
+
+        data.category_id = categoryId;
+    }
+
+    data.updated_at = new Date();
+
+    return prismaClient.product.update({
+        where: {
+            id: productId
+        },
+        data: data,
+        select: {
+            id: true,
+            name: true,
+            price: true,
+            stock: true,
+            created_at: true,
+            updated_at: true,
+            category: true
+        }
+    });
+}
+
 export default {
     create,
     getAll,
-    get
+    get,
+    update
 }

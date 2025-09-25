@@ -184,8 +184,7 @@
 ```json
 {
     "success": false,
-    "message": "Validation error",
-    "errors": "Price must be greater than 0"
+    "errors": "Price must be a positive number"
 }
 ```
 
