@@ -113,3 +113,48 @@ describe('GET /api/contacts', function() {
 
 });
 
+describe('GET /api/users/:username/contacts', function() {
+
+    beforeEach(async () => {
+        await createTestUser();
+        const user = await getTestUser();
+
+        await createTestContact(user.username);
+    });
+        
+    afterEach(async () => {
+        await removeTestContact();
+        await removeTestUser();
+    });
+    
+    it('should get contact by username', async () => {
+        const token = await generateTestToken();
+        const user = await getTestUser();
+
+        const result = await supertest(web)
+            .get(`/api/users/${user.username}/contacts`)
+            .set('Authorization', `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Contact fetched successfully");
+        expect(result.body.data.username).toBe(user.username);
+    });
+
+    it('should fail get contact when contact not found', async () => {
+        const token = await generateTestToken();
+
+        const result = await supertest(web)
+            .get(`/api/users/fake-username/contacts`)
+            .set('Authorization', `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(404);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+
+});

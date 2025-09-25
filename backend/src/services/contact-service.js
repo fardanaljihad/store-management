@@ -1,6 +1,6 @@
 import { prismaClient } from "../applications/database.js";
 import { ResponseError } from "../errors/response-error.js";
-import { createContactValidation, getAllContactsValidation } from "../validations/contact-validation";
+import { createContactValidation, getAllContactsValidation, getContactValidation } from "../validations/contact-validation";
 import { getUserValidation } from "../validations/user-validation.js"
 import { validate } from "../validations/validation.js"
 
@@ -51,7 +51,24 @@ const getAll = async (request) => {
     }
 }
 
+const get = async (username) => {
+    username = validate(getContactValidation, username);
+
+    const contact = await prismaClient.contact.findUnique({
+        where: {
+            username
+        }
+    });
+
+    if (!contact) {
+        throw new ResponseError(404, "Contact not found");
+    }
+
+    return contact;
+}
+
 export default {
     create,
-    getAll
+    getAll,
+    get
 }

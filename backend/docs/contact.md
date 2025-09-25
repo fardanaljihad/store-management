@@ -100,7 +100,7 @@
 
 ## Get Contact by Username
 
-**Endpoint:** `GET /api/contacts/{username}`
+**Endpoint:** `GET /api/users/{username}/contacts`
 
 **Headers:**
 - Authorization: token
@@ -125,8 +125,7 @@
 ```json
 {
     "success": false,
-    "message": "Contact not found",
-    "errors": "No contact with username johndoe"
+    "errors": "Contact not found"
 }
 ```
 

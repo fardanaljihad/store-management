@@ -34,6 +34,7 @@ const contactRouter = express.Router();
 contactRouter.use(authMiddleware);
 contactRouter.post('/api/users/:username/contacts', contactController.create);
 contactRouter.get('/api/contacts', contactController.getAll);
+contactRouter.get('/api/users/:username/contacts', contactController.get);
 
 export {
     userRouter,

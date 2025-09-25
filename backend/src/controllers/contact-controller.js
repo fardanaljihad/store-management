@@ -28,7 +28,22 @@ const getAll = async (req, res, next) => {
     }
 }
 
+const get = async (req, res, next) => {
+    try {
+        const username = req.params.username;
+        const result = await contactService.get(username);
+        res.status(200).json({
+            success: true,
+            message: "Contact fetched successfully",
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
 export default {
     create,
-    getAll
+    getAll,
+    get
 }
