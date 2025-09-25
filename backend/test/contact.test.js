@@ -230,3 +230,50 @@ describe('PATCH /api/users/:username/contacts', function() {
     });
 
 });
+
+describe('DELETE /api/users/:username/contacts', function() {
+
+    beforeEach(async () => {
+        await createTestUser();
+        const user = await getTestUser();
+
+        await createTestContact(user.username);
+    });
+        
+    afterEach(async () => {
+        await removeTestContact();
+        await removeTestUser();
+    });
+    
+    it('should delete contact by username', async () => {
+        const token = await generateTestToken();
+        const user = await getTestUser();
+
+        const result = await supertest(web)
+            .delete(`/api/users/${user.username}/contacts`)
+            .set('Authorization', `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Contact deleted successfully");
+        expect(result.body.data.email).toBe("test-contact@example.com");
+        expect(result.body.data.username).toBe(user.username);
+    });
+
+    it('should fail delete contact when contact not found', async () => {
+        const token = await generateTestToken();
+
+        const result = await supertest(web)
+            .delete(`/api/users/fake-username/contacts`)
+            .set('Authorization', `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(404);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+
+});

@@ -188,11 +188,7 @@
     "success": true,
     "message": "Contact deleted successfully",
     "data": {
-        "id": 1,
-        "first_name": "John",
-        "last_name": "Doe",
         "email": "johndoe@example.com",
-        "phone": "081234567890",
         "username": "johndoe"
     }
 }

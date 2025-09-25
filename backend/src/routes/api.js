@@ -36,6 +36,7 @@ contactRouter.post('/api/users/:username/contacts', contactController.create);
 contactRouter.get('/api/contacts', contactController.getAll);
 contactRouter.get('/api/users/:username/contacts', contactController.get);
 contactRouter.patch('/api/users/:username/contacts', contactController.update);
+contactRouter.delete('/api/users/:username/contacts', contactController.del);
 
 export {
     userRouter,
