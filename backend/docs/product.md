@@ -213,7 +213,6 @@
 ```json
 {
     "success": false,
-    "message": "Access denied",
     "errors": "Unauthorized"
 }
 ```

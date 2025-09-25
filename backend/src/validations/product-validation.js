@@ -23,9 +23,12 @@ const updateProductValidation = Joi.object({
     category_id: Joi.number().integer().positive().optional()
 });
 
+const deleteProductValidation = Joi.number().integer().positive().required();
+
 export {
     createProductValidation,
     getAllProductsValidation,
     getProductValidation,
-    updateProductValidation
+    updateProductValidation,
+    deleteProductValidation
 }

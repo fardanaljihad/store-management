@@ -55,9 +55,24 @@ const update = async (req, res, next) => {
     }
 }
 
+const del = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const result = await productService.del(id);
+        res.status(200).json({
+            success: true,
+            message: "Product deleted successfully",
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
 export default {
     create,
     getAll,
     get,
-    update
+    update,
+    del
 }

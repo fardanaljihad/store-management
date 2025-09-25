@@ -1,7 +1,7 @@
 import { prismaClient } from "../applications/database.js";
 import { ResponseError } from "../errors/response-error.js";
 import { getCategoryValidation } from "../validations/category-validation.js";
-import { createProductValidation, getAllProductsValidation, getProductValidation, updateProductValidation } from "../validations/product-validation.js"
+import { createProductValidation, deleteProductValidation, getAllProductsValidation, getProductValidation, updateProductValidation } from "../validations/product-validation.js"
 import { validate } from "../validations/validation.js"
 
 const create = async (request) => {
@@ -160,9 +160,34 @@ const update = async (id, request) => {
     });
 }
 
+const del = async (id) => {
+    id = validate(deleteProductValidation, id);
+
+    const isProductExists = await prismaClient.product.findUnique({
+        where: {
+            id
+        }
+    });
+
+    if (!isProductExists) {
+        throw new ResponseError(404, "Product not found");
+    }
+
+    return prismaClient.product.delete({
+        where: {
+            id
+        },
+        select: {
+            id: true,
+            name: true
+        }
+    });
+}
+
 export default {
     create,
     getAll,
     get,
-    update
+    update,
+    del
 }

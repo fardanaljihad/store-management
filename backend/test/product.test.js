@@ -409,3 +409,49 @@ describe('PATCH /api/products/:id', function() {
         expect(result.body.errors).toBeDefined();
     });
 });
+
+describe('DELETE /api/products/:id', function() {
+    
+    beforeEach(async () => {
+        await createTestCategory();
+        
+        const category = await getTestCategory();
+
+        await createTestProduct(category.id);
+    });
+        
+    afterEach(async () => {
+        await removeTestProduct();
+        await removeTestCategory();
+    });
+
+    it("should delete product", async () => {
+        const token = await generateTestToken();
+        const product = await getTestProduct();
+
+        const result = await supertest(web)
+            .delete(`/api/products/${product.id}`)
+            .set("Authorization", `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Product deleted successfully");
+        expect(result.body.data.name).toBe("test-product");
+    });
+
+    it("should reject delete product when user is not manager", async () => {
+        const token = await generateTestToken({username: "test-user", role: "CASHIER"});
+        const product = await getTestProduct();
+
+        const result = await supertest(web)
+            .delete(`/api/products/${product.id}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(401);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+});

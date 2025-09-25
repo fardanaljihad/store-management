@@ -27,6 +27,7 @@ productRouter.post('/api/products', permittedRoles(["MANAGER"]), productControll
 productRouter.get('/api/products', productController.getAll);
 productRouter.get('/api/products/:id', productController.get);
 productRouter.patch('/api/products/:id', productController.update);
+productRouter.delete('/api/products/:id', permittedRoles(["MANAGER"]), productController.del);
 
 export {
     userRouter,
