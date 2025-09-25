@@ -88,3 +88,11 @@ export const createTestProduct = async (category_id) => {
         }
     });
 }
+
+export const getTestProduct = async () => {
+    return await prismaClient.product.findFirst({
+        where: {
+            name: 'test-product'
+        }
+    })
+}

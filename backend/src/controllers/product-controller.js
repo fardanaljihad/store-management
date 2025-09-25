@@ -27,7 +27,22 @@ const getAll = async (req, res, next) => {
     }
 }
 
+const get = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const result = await productService.get(id);
+        res.status(200).json({
+            success: true,
+            message: "Product fetched successfully",
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
 export default {
     create,
-    getAll
+    getAll,
+    get
 }

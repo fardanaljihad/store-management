@@ -1,6 +1,6 @@
 import { logger } from "../src/applications/logging.js";
 import { web } from "../src/applications/web.js";
-import { createTestCategory, createTestProduct, generateTestToken, getTestCategory, removeTestCategory, removeTestProduct } from "./test-utils.js";
+import { createTestCategory, createTestProduct, generateTestToken, getTestCategory, getTestProduct, removeTestCategory, removeTestProduct } from "./test-utils.js";
 import supertest from "supertest";
 
 describe('POST /api/products', function() {
@@ -187,5 +187,70 @@ describe('GET /api/users', function() {
             page: 1,
             limit: 10
         });
+    });
+});
+
+describe('GET /api/users', function() {
+    
+    beforeEach(async () => {
+        await createTestCategory();
+        
+        const category = await getTestCategory();
+
+        await createTestProduct(category.id);
+    });
+        
+    afterEach(async () => {
+        await removeTestProduct();
+        await removeTestCategory();
+    });
+
+    it("should get product by id", async () => {
+        const token = await generateTestToken();
+        const product = await getTestProduct();
+
+        const result = await supertest(web)
+            .get(`/api/products/${product.id}`)
+            .set("Authorization", `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Product fetched successfully");
+        expect(result.body.data.name).toBe("test-product");
+        expect(result.body.data.price).toBe(3500);
+        expect(result.body.data.stock).toBe(100);
+        expect(result.body.data.created_at).toBeDefined();
+        expect(result.body.data.updated_at).toBe(null);
+        expect(result.body.data.category.id).toBeDefined();
+        expect(result.body.data.category.name).toBeDefined();
+    });
+
+    it("should reject get product when id not found", async () => {
+        const token = await generateTestToken();
+
+        const result = await supertest(web)
+            .get("/api/products/9999999")
+            .set("Authorization", `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(404);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+
+    it("should reject get product when token not provided", async () => {
+        const product = await getTestProduct();
+
+        const result = await supertest(web)
+            .get(`/api/products/${product.id}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(401);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
     });
 });

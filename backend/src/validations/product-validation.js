@@ -14,7 +14,10 @@ const getAllProductsValidation = Joi.object({
     name: Joi.string().max(100).optional(),
 });
 
+const getProductValidation = Joi.number().integer().positive().required();
+
 export {
     createProductValidation,
-    getAllProductsValidation
+    getAllProductsValidation,
+    getProductValidation
 }

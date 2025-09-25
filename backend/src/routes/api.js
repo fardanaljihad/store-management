@@ -25,6 +25,7 @@ const productRouter = express.Router();
 productRouter.use(authMiddleware);
 productRouter.post('/api/products', permittedRoles(["MANAGER"]), productController.create);
 productRouter.get('/api/products', productController.getAll);
+productRouter.get('/api/products/:id', productController.get);
 
 export {
     userRouter,

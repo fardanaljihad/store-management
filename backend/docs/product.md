@@ -137,8 +137,7 @@
 ```json
 {
     "success": false,
-    "message": "Product not found",
-    "errors": "No product with id 1"
+    "errors": "Product not found"
 }
 ```
 
