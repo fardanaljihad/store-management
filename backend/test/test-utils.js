@@ -154,3 +154,11 @@ export const createTestOrder = async () => {
         }
     });
 }
+
+export const getTestOrder = async () => {
+    return await prismaClient.order.findFirst({
+        where: {
+            username: "test-user"
+        }
+    })
+}

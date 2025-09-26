@@ -1,5 +1,5 @@
 import supertest from "supertest";
-import { createTestCategory, createTestOrder, createTestProduct, createTestUser, generateTestToken, getTestCategory, getTestProduct, getTestUser, removeTestCategory, removeTestLineItems, removeTestOrder, removeTestProduct, removeTestUser } from "./test-utils.js";
+import { createTestCategory, createTestOrder, createTestProduct, createTestUser, generateTestToken, getTestCategory, getTestOrder, getTestProduct, getTestUser, removeTestCategory, removeTestLineItems, removeTestOrder, removeTestProduct, removeTestUser } from "./test-utils.js";
 import { web } from "../src/applications/web.js";
 import { logger } from "../src/applications/logging.js";
 
@@ -222,5 +222,69 @@ describe('GET /api/users/:username/orders', function() {
         expect(result.body.pagination.page).toBe(1);
         expect(result.body.pagination.limit).toBe(10);
         expect(result.body.pagination.total).toBe(0);
+    });
+});
+
+describe('GET /api/orders/:id', function() {
+
+    beforeEach(async () => {
+        await createTestCategory();
+        const category = await getTestCategory();
+        await createTestProduct(category.id);
+        await createTestUser();
+        await createTestOrder();
+    });
+        
+    afterEach(async () => {
+        await removeTestLineItems();
+        await removeTestProduct();
+        await removeTestCategory();
+        await removeTestOrder();
+        await removeTestUser();
+    });
+
+    it('should get order by id successfully', async () => {
+        const token = await generateTestToken();
+        const order = await getTestOrder();
+        const orderId = order.id;
+
+        const result = await supertest(web)
+            .get(`/api/orders/${orderId}`)
+            .set('Authorization', `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Order fetched successfully");
+
+        expect(result.body.data.id).toBe(orderId);
+        expect(result.body.data.username).toBeDefined();
+        expect(result.body.data.created_at).toBeDefined();
+        expect(result.body.data.updated_at).toBeDefined();
+        expect(result.body.data.total).toBeDefined();
+
+        expect(Array.isArray(result.body.data.order_line_items)).toBe(true);
+        expect(result.body.data.order_line_items.length).toBeGreaterThan(0);
+        expect(result.body.data.order_line_items[0].product).toBeDefined();
+        expect(result.body.data.order_line_items[0].product.id).toBeDefined();
+        expect(result.body.data.order_line_items[0].product.name).toBeDefined();
+        expect(result.body.data.order_line_items[0].product.price).toBeDefined();
+        expect(result.body.data.order_line_items[0].quantity).toBeDefined();
+        expect(result.body.data.order_line_items[0].subtotal).toBeDefined();
+    });
+
+    it('should reject get order when order id does not exist', async () => {
+        const token = await generateTestToken();
+
+        const result = await supertest(web)
+            .get(`/api/orders/9999`)
+            .set('Authorization', `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(404);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
     });
 });

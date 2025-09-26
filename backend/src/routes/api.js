@@ -43,6 +43,7 @@ const orderRouter = express.Router();
 orderRouter.use(authMiddleware);
 orderRouter.post('/api/users/:username/orders', orderController.create);
 orderRouter.get('/api/orders', orderController.getAll);
+orderRouter.get('/api/orders/:id', orderController.get);
 
 export {
     userRouter,
