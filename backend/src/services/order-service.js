@@ -1,7 +1,7 @@
 import { prismaClient } from "../applications/database.js";
 import { ResponseError } from "../errors/response-error.js";
 import orderRepository from "../repositories/order-repository.js";
-import { createOrderValidation, getAllOrdersValidation, getOrderValidation } from "../validations/order-validation.js"
+import { createOrderValidation, getAllOrdersValidation, getOrderValidation, updateOrderValidation } from "../validations/order-validation.js"
 import { validate } from "../validations/validation.js"
 
 const create = async (request) => {
@@ -116,8 +116,36 @@ const get = async (id) => {
     return order;
 }
 
+const update = async (id, total) => {
+    id = validate(getOrderValidation, id);
+
+    const isOrderExists = await prismaClient.order.findUnique({
+        where: { id }
+    });
+
+    if (!isOrderExists) {
+        throw new ResponseError(404, "Order not found");
+    }
+
+    total = validate(updateOrderValidation, total);
+
+    return prismaClient.order.update({
+        where: { id },
+        data: { 
+            total: total,
+            updated_at: new Date()
+        },
+        select: {
+            id: true,
+            updated_at: true,
+            total: true
+        }
+    });
+}
+
 export default {
     create,
     getAll,
-    get
+    get,
+    update
 }

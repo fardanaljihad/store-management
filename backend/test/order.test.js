@@ -288,3 +288,75 @@ describe('GET /api/orders/:id', function() {
         expect(result.body.errors).toBeDefined();
     });
 });
+
+describe('PATCH /api/orders/:id', function() {
+
+    beforeEach(async () => {
+        await createTestCategory();
+        const category = await getTestCategory();
+        await createTestProduct(category.id);
+        await createTestUser();
+        await createTestOrder();
+    });
+        
+    afterEach(async () => {
+        await removeTestLineItems();
+        await removeTestProduct();
+        await removeTestCategory();
+        await removeTestOrder();
+        await removeTestUser();
+    });
+
+    it('should allow manager to update order total successfully', async () => {
+        const token = await generateTestToken();
+        const order = await getTestOrder();
+        const orderId = order.id;
+
+        const result = await supertest(web)
+            .patch(`/api/orders/${orderId}`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({ total: 500000 });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Order updated successfully");
+
+        expect(result.body.data.id).toBe(orderId);
+        expect(result.body.data.updated_at).not.toBeNull();
+        expect(result.body.data.total).toBe(500000);
+    });
+
+    it('should reject update when order id does not exist', async () => {
+        const token = await generateTestToken();
+
+        const result = await supertest(web)
+            .patch(`/api/orders/9999`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({ total: 500000 });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(404);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+
+    it('should not allow cashier role to update order', async () => {
+        const token = await generateTestToken({ username: "test-user", role: "CASHIER" });
+        const order = await getTestOrder();
+        const orderId = order.id;
+
+        const result = await supertest(web)
+            .patch(`/api/orders/${orderId}`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({ total: 500000 });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(403);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+});

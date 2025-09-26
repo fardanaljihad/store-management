@@ -195,7 +195,8 @@
     "message": "Order updated successfully",
     "data": {
         "id": 1,
-        "total": "7000"
+        "total": "7000",
+        "updated_at": "2025-09-26T12:37:00.985Z"
     }
 }
 ```

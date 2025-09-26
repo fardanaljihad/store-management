@@ -6,7 +6,7 @@ const createOrderValidation = Joi.object({
         Joi.object({
             product_id: Joi.number().integer().required(),
             quantity: Joi.number().integer().min(1).required(),
-            price: Joi.number().integer().min(0).required()
+            price: Joi.number().positive().required()
         })
     ).min(1).required()
 });
@@ -17,10 +17,13 @@ const getAllOrdersValidation = Joi.object({
     username: Joi.string().max(100).optional()
 });
 
-const getOrderValidation = Joi.number().integer().required();
+const getOrderValidation = Joi.number().integer().min(1).required();
+
+const updateOrderValidation = Joi.number().positive().required();
 
 export {
     createOrderValidation,
     getAllOrdersValidation,
-    getOrderValidation
+    getOrderValidation,
+    updateOrderValidation
 }
