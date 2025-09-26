@@ -360,3 +360,71 @@ describe('PATCH /api/orders/:id', function() {
         expect(result.body.errors).toBeDefined();
     });
 });
+
+describe('DELETE /api/orders/:id', function() {
+
+    beforeEach(async () => {
+        await createTestCategory();
+        const category = await getTestCategory();
+        await createTestProduct(category.id);
+        await createTestUser();
+        await createTestOrder();
+    });
+        
+    afterEach(async () => {
+        await removeTestLineItems();
+        await removeTestProduct();
+        await removeTestCategory();
+        await removeTestOrder();
+        await removeTestUser();
+    });
+
+    it('should allow manager to delete order successfully', async () => {
+        const token = await generateTestToken();
+        const order = await getTestOrder();
+        const orderId = order.id;
+
+        const result = await supertest(web)
+            .delete(`/api/orders/${orderId}`)
+            .set('Authorization', `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Order deleted successfully");
+
+        expect(result.body.data.id).toBe(orderId);
+        expect(result.body.data.username).toBeDefined();
+    });
+
+    it('should reject delete when order id does not exist', async () => {
+        const token = await generateTestToken();
+
+        const result = await supertest(web)
+            .delete(`/api/orders/9999`)
+            .set('Authorization', `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(404);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+
+    it('should not allow cashier to delete order', async () => {
+        const token = await generateTestToken({ username: "test-user", role: "CASHIER" });
+        const order = await getTestOrder();
+        const orderId = order.id;
+
+        const result = await supertest(web)
+            .delete(`/api/orders/${orderId}`)
+            .set('Authorization', `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(403);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+});

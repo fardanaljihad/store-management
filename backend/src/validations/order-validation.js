@@ -21,9 +21,12 @@ const getOrderValidation = Joi.number().integer().min(1).required();
 
 const updateOrderValidation = Joi.number().positive().required();
 
+const deleteOrderValidation = Joi.number().integer().min(1).required();
+
 export {
     createOrderValidation,
     getAllOrdersValidation,
     getOrderValidation,
-    updateOrderValidation
+    updateOrderValidation,
+    deleteOrderValidation
 }

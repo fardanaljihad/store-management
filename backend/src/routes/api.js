@@ -45,6 +45,7 @@ orderRouter.post('/api/users/:username/orders', orderController.create);
 orderRouter.get('/api/orders', orderController.getAll);
 orderRouter.get('/api/orders/:id', orderController.get);
 orderRouter.patch('/api/orders/:id', permittedRoles(["MANAGER"]), orderController.update);
+orderRouter.delete('/api/orders/:id', permittedRoles(["MANAGER"]), orderController.del);
 
 export {
     userRouter,

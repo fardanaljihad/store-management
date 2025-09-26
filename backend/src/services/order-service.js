@@ -1,7 +1,7 @@
 import { prismaClient } from "../applications/database.js";
 import { ResponseError } from "../errors/response-error.js";
 import orderRepository from "../repositories/order-repository.js";
-import { createOrderValidation, getAllOrdersValidation, getOrderValidation, updateOrderValidation } from "../validations/order-validation.js"
+import { createOrderValidation, deleteOrderValidation, getAllOrdersValidation, getOrderValidation, updateOrderValidation } from "../validations/order-validation.js"
 import { validate } from "../validations/validation.js"
 
 const create = async (request) => {
@@ -143,9 +143,34 @@ const update = async (id, total) => {
     });
 }
 
+const del = async (id) => {
+    id = validate(deleteOrderValidation, id);
+
+    const isOrderExists = await prismaClient.order.findUnique({
+        where: { id }
+    });
+
+    if (!isOrderExists) {
+        throw new ResponseError(404, "Order not found");
+    }
+
+    await prismaClient.orderLineItem.deleteMany({
+        where: { order_id: id }
+    });
+
+    return prismaClient.order.delete({
+        where: { id },
+        select: {
+            id: true,
+            username: true
+        }
+    });
+}
+
 export default {
     create,
     getAll,
     get,
-    update
+    update,
+    del
 }
