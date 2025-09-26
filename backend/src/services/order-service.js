@@ -1,7 +1,7 @@
 import { prismaClient } from "../applications/database.js";
 import { ResponseError } from "../errors/response-error.js";
 import orderRepository from "../repositories/order-repository.js";
-import { createOrderValidation } from "../validations/order-validation.js"
+import { createOrderValidation, getAllOrdersValidation } from "../validations/order-validation.js"
 import { validate } from "../validations/validation.js"
 
 const create = async (request) => {
@@ -45,6 +45,48 @@ const create = async (request) => {
     };
 }
 
+const getAll = async (request) => {
+    const { page, limit, username } = validate(getAllOrdersValidation, request);
+
+    const skip = (page - 1) * limit;
+
+    const where = {};
+    if (username) {
+        where.username = username;
+    }
+
+    const orders = await prismaClient.order.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: {
+            created_at: 'desc'
+        },
+        select: {
+            id: true,
+            username: true,
+            created_at: true,
+            updated_at: true,
+            _count: {
+                select: {
+                    order_line_items: true,
+                },
+            },
+            total: true,
+        }
+    });
+
+    return {
+        data: orders,
+        pagination: {
+            total: orders.length,
+            page,
+            limit
+        }
+    };
+}
+
 export default {
-    create
+    create,
+    getAll
 }

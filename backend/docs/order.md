@@ -2,7 +2,7 @@
 
 ## Create Order
 
-**Endpoint:** `POST /api/orders`
+**Endpoint:** `POST /api/users/:username/orders`
 
 **Headers:**
 - Authorization: token
@@ -96,7 +96,7 @@
             "username": "johndoe",
             "created_at": "2025-09-22T10:00:00.000Z",
             "updated_at": null,
-            "total_items": 3,
+            "_count.order_line_items": 3,
             "total": 12000
         }
     ],

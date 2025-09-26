@@ -140,13 +140,17 @@ export const createTestOrder = async () => {
     await prismaClient.order.create({
         data: {
             username: (await getTestUser()).username,
-            order_line_items: [
-                {
-                    product_id: (await getTestProduct()).id,
-                    quantity: 1,
-                    price: 3500
-                }
-            ]
+            order_line_items: {
+                create: [
+                    {
+                        product_id: (await getTestProduct()).id,
+                        quantity: 1,
+                        subtotal: 3500
+                    }
+                ]
+            },
+            total: 3500,
+            created_at: new Date()
         }
     });
 }

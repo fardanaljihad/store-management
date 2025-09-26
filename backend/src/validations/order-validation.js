@@ -11,6 +11,13 @@ const createOrderValidation = Joi.object({
     ).min(1).required()
 });
 
+const getAllOrdersValidation = Joi.object({
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).default(10),
+    username: Joi.string().max(100).optional()
+});
+
 export {
-    createOrderValidation
+    createOrderValidation,
+    getAllOrdersValidation
 }
