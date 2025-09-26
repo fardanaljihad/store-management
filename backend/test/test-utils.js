@@ -119,3 +119,34 @@ export const createTestContact = async (username) => {
         }
     });
 }
+
+export const removeTestLineItems = async () => {
+    await prismaClient.orderLineItem.deleteMany({
+        where: {
+            product_id: (await getTestProduct()).id
+        }
+    })
+}
+
+export const removeTestOrder = async () => {
+    await prismaClient.order.deleteMany({
+        where: {
+            username: "test-user"
+        }
+    })
+}
+
+export const createTestOrder = async () => {
+    await prismaClient.order.create({
+        data: {
+            username: (await getTestUser()).username,
+            order_line_items: [
+                {
+                    product_id: (await getTestProduct()).id,
+                    quantity: 1,
+                    price: 3500
+                }
+            ]
+        }
+    });
+}

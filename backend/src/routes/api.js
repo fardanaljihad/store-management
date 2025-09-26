@@ -4,6 +4,7 @@ import { authMiddleware, permittedRoles } from "../middlewares/auth-middleware.j
 import categoryController from "../controllers/category-controller.js";
 import productController from "../controllers/product-controller.js";
 import contactController from "../controllers/contact-controller.js";
+import orderController from "../controllers/order-controller.js";
 
 const userRouter = express.Router();
 userRouter.use(authMiddleware);
@@ -38,9 +39,14 @@ contactRouter.get('/api/users/:username/contacts', contactController.get);
 contactRouter.patch('/api/users/:username/contacts', contactController.update);
 contactRouter.delete('/api/users/:username/contacts', contactController.del);
 
+const orderRouter = express.Router();
+orderRouter.use(authMiddleware);
+orderRouter.post('/api/users/:username/orders', orderController.create);
+
 export {
     userRouter,
     categoryRouter,
     productRouter,
-    contactRouter
+    contactRouter,
+    orderRouter
 }

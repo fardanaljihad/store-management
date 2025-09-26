@@ -14,14 +14,15 @@
     "order_line_items": [
         {
             "product_id": 1,
-            "quantity": 2
+            "quantity": 2,
+            "price": 3500
         },
         {
             "product_id": 2,
-            "quantity": 1
+            "quantity": 1,
+            "price": 5000
         }
-    ],
-    "total": 12000
+    ]
 }
 ```
 
@@ -66,8 +67,7 @@
 ```json
 {
     "success": false,
-    "message": "Validation error",
-    "errors": "Product stock is not enough"
+    "errors": "[product_name] does not have enough stock for [quantity]"
 }
 ```
 
