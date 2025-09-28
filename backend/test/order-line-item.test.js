@@ -217,3 +217,88 @@ describe('GET /api/order-line-items/:id', function() {
         expect(result.body.errors).toBeDefined();
     });
 });
+
+describe('PATCH /api/order-line-items/:id', function() {
+    
+    beforeEach(async () => {
+        await createTestCategory();
+        const category = await getTestCategory();
+        await createTestProduct(category.id);
+        await createTestUser();
+        await createTestOrder();
+    });
+        
+    afterEach(async () => {
+        await removeTestLineItems();
+        await removeTestProduct();
+        await removeTestCategory();
+        await removeTestOrder();
+        await removeTestUser();
+    });
+
+    it('should update an order line item', async () => {
+        const token = await generateTestToken();
+        const orderLineItem = await getTestOrderLineItem();
+
+        let product = await getTestProduct();
+
+        const result = await supertest(web)
+            .patch(`/api/order-line-items/${orderLineItem.id}`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                quantity: 3
+            });
+        
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Order line item updated successfully");
+        expect(result.body.data.id).toBe(orderLineItem.id);
+        expect(result.body.data.quantity).toBe(3);
+        expect(result.body.data.subtotal).toBe(product.price * 3);
+
+        // Verify stock is decremented
+        product = await getTestProduct();
+        expect(product.stock).toBe(97);
+
+        // Verify total in order
+        const order = await getTestOrder();
+        expect(order.total).toBe(product.price * 3);
+    });
+
+    it('should reject update when stock is not enough', async () => {
+        const token = await generateTestToken();
+        const orderLineItem = await getTestOrderLineItem();
+
+        const result = await supertest(web)
+            .patch(`/api/order-line-items/${orderLineItem.id}`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                quantity: 2000
+            });
+        
+        logger.info(result.body);
+
+        expect(result.status).toBe(400);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+
+    it('should reject update when order line item not found', async () => {
+        const token = await generateTestToken();
+
+        const result = await supertest(web)
+            .patch('/api/order-line-items/9999')
+            .set('Authorization', `Bearer ${token}`)
+            .send({
+                quantity: 2000
+            });
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(404);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    }); 
+});

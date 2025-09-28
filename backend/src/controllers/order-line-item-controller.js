@@ -39,8 +39,22 @@ const get = async (req, res, next) => {
     }
 }
 
+const update = async (req, res, next) => {
+    try {
+        const result = await orderLineItemService.update(req.params.id, req.body.quantity);
+        res.status(200).json({
+            success: true,
+            message: "Order line item updated successfully",
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
 export default {
     create,
     getAll,
-    get
+    get,
+    update
 }
