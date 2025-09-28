@@ -90,3 +90,73 @@ describe('POST /api/order-line-items', function() {
         expect(result.body.errors).toBeDefined();
     });
 });
+
+describe('GET /api/order-line-items', function() {
+    
+    beforeEach(async () => {
+        await createTestCategory();
+        const category = await getTestCategory();
+        await createTestProduct(category.id);
+        await createTestUser();
+        await createTestOrder();
+    });
+        
+    afterEach(async () => {
+        await removeTestLineItems();
+        await removeTestProduct();
+        await removeTestCategory();
+        await removeTestOrder();
+        await removeTestUser();
+    });
+
+    it('should get all order line items', async () => {
+        const token = await generateTestToken();
+        const product = await getTestProduct();
+        const order = await getTestOrder();
+
+        const result = await supertest(web)
+            .get('/api/order-line-items')
+            .set('Authorization', `Bearer ${token}`)
+            .query({
+                page: 1,
+                limit: 10
+            });
+        
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Order line items fetched successfully");
+
+        expect(Array.isArray(result.body.data)).toBe(true);
+        expect(result.body.data.length).toBeGreaterThan(0);
+
+        const item = result.body.data[0];
+        expect(item.id).toBeDefined();
+        expect(item.order_id).toBe(order.id);
+        expect(item.product.id).toBe(product.id);
+        expect(item.product.name).toBe(product.name);
+        expect(item.product.price).toBe(product.price);
+        expect(item.quantity).toBe(1);
+        expect(item.subtotal).toBe(product.price * 1);
+    });
+
+    it('should reject get all when order not found', async () => {
+        const token = await generateTestToken();
+
+        const result = await supertest(web)
+            .get('/api/order-line-items')
+            .set('Authorization', `Bearer ${token}`)
+            .query({
+                order_id: 9999,
+                page: 1,
+                limit: 10
+            });
+        
+        logger.info(result.body);
+
+        expect(result.status).toBe(404);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+});

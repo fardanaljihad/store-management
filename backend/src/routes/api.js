@@ -51,6 +51,7 @@ orderRouter.delete('/api/orders/:id', permittedRoles(["MANAGER"]), orderControll
 const orderLineItemRouter = express.Router();
 orderLineItemRouter.use(authMiddleware);
 orderLineItemRouter.post('/api/order-line-items', orderLineItemController.create);
+orderLineItemRouter.get('/api/order-line-items', orderLineItemController.getAll);
 
 export {
     userRouter,
