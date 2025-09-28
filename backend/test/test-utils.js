@@ -162,3 +162,14 @@ export const getTestOrder = async () => {
         }
     })
 }
+
+export const getTestOrderLineItem = async () => {
+    return await prismaClient.orderLineItem.findFirst({
+        where: {
+            product_id: (await getTestProduct()).id
+        },
+        select: {
+            id: true
+        }
+    })
+}

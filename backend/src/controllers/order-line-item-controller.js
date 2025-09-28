@@ -26,7 +26,21 @@ const getAll = async (req, res, next) => {
     }
 }
 
+const get = async (req, res, next) => {
+    try {
+        const result = await orderLineItemService.get(req.params.id);
+        res.status(200).json({
+            success: true,
+            message: "Order line item fetched successfully",
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
 export default {
     create,
-    getAll
+    getAll,
+    get
 }

@@ -1,7 +1,7 @@
 import { prismaClient } from "../applications/database.js";
 import { ResponseError } from "../errors/response-error.js";
 import orderLineItemRepository from "../repositories/order-line-item-repository.js";
-import { createOrderLineItemValidation, getAllOrderLineItemValidation } from "../validations/order-line-item-validation.js";
+import { createOrderLineItemValidation, getAllOrderLineItemValidation, getOrderLineItemValidation } from "../validations/order-line-item-validation.js";
 import { validate } from "../validations/validation.js"
 
 const create = async (request) => {
@@ -69,7 +69,35 @@ const getAll = async (request) => {
     });
 }
 
+const get = async (id) => {
+    const orderLineItemId = validate(getOrderLineItemValidation, id);
+
+    const orderLineItem = await prismaClient.orderLineItem.findUnique({
+        where: { id: orderLineItemId },
+        select: { 
+            id: true,
+            order_id: true,
+            product: {
+                select: {
+                    id: true,
+                    name: true,
+                    price: true
+                } 
+            },
+            quantity: true,
+            subtotal: true
+        }
+    });
+
+    if (!orderLineItem) {
+        throw new ResponseError(404, 'Order line item not found');
+    }
+
+    return orderLineItem;
+}
+
 export default {
     create,
-    getAll
+    getAll,
+    get
 }

@@ -1,6 +1,6 @@
 import supertest from "supertest";
 import { web } from "../src/applications/web.js";
-import { createTestCategory, createTestOrder, createTestProduct, createTestUser, generateTestToken, getTestCategory, getTestOrder, getTestProduct, removeTestCategory, removeTestLineItems, removeTestOrder, removeTestProduct, removeTestUser } from "./test-utils";
+import { createTestCategory, createTestOrder, createTestProduct, createTestUser, generateTestToken, getTestCategory, getTestOrder, getTestOrderLineItem, getTestProduct, removeTestCategory, removeTestLineItems, removeTestOrder, removeTestProduct, removeTestUser } from "./test-utils";
 import { logger } from "../src/applications/logging.js";
 
 describe('POST /api/order-line-items', function() {
@@ -152,6 +152,63 @@ describe('GET /api/order-line-items', function() {
                 page: 1,
                 limit: 10
             });
+        
+        logger.info(result.body);
+
+        expect(result.status).toBe(404);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    });
+});
+
+describe('GET /api/order-line-items/:id', function() {
+    
+    beforeEach(async () => {
+        await createTestCategory();
+        const category = await getTestCategory();
+        await createTestProduct(category.id);
+        await createTestUser();
+        await createTestOrder();
+    });
+        
+    afterEach(async () => {
+        await removeTestLineItems();
+        await removeTestProduct();
+        await removeTestCategory();
+        await removeTestOrder();
+        await removeTestUser();
+    });
+
+    it('should get an order line item', async () => {
+        const token = await generateTestToken();
+        const order = await getTestOrder();
+        const product = await getTestProduct();
+        const orderLineItem = await getTestOrderLineItem();
+
+        const result = await supertest(web)
+            .get(`/api/order-line-items/${orderLineItem.id}`)
+            .set('Authorization', `Bearer ${token}`);
+
+        logger.info(result.body);
+        
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Order line item fetched successfully");
+        expect(result.body.data.id).toBe(orderLineItem.id);
+        expect(result.body.data.order_id).toBe(order.id);
+        expect(result.body.data.product.id).toBe(product.id);
+        expect(result.body.data.product.name).toBe(product.name);
+        expect(result.body.data.product.price).toBe(product.price);
+        expect(result.body.data.quantity).toBe(1);
+        expect(result.body.data.subtotal).toBe(product.price * 1);
+    });
+
+    it('should reject get when order line item not found', async () => {
+        const token = await generateTestToken();
+
+        const result = await supertest(web)
+            .get('/api/order-line-items/9999')
+            .set('Authorization', `Bearer ${token}`);
         
         logger.info(result.body);
 

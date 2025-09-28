@@ -12,7 +12,10 @@ const getAllOrderLineItemValidation = Joi.object({
     order_id: Joi.number().integer().optional(),
 });
 
+const getOrderLineItemValidation = Joi.number().integer().min(1).required();
+
 export {
     createOrderLineItemValidation,
-    getAllOrderLineItemValidation
+    getAllOrderLineItemValidation,
+    getOrderLineItemValidation
 }
