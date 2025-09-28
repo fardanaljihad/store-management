@@ -5,6 +5,7 @@ import categoryController from "../controllers/category-controller.js";
 import productController from "../controllers/product-controller.js";
 import contactController from "../controllers/contact-controller.js";
 import orderController from "../controllers/order-controller.js";
+import orderLineItemController from "../controllers/order-line-item-controller.js";
 
 const userRouter = express.Router();
 userRouter.use(authMiddleware);
@@ -47,10 +48,15 @@ orderRouter.get('/api/orders/:id', orderController.get);
 orderRouter.patch('/api/orders/:id', permittedRoles(["MANAGER"]), orderController.update);
 orderRouter.delete('/api/orders/:id', permittedRoles(["MANAGER"]), orderController.del);
 
+const orderLineItemRouter = express.Router();
+orderLineItemRouter.use(authMiddleware);
+orderLineItemRouter.post('/api/order-line-items', orderLineItemController.create);
+
 export {
     userRouter,
     categoryRouter,
     productRouter,
     contactRouter,
-    orderRouter
+    orderRouter,
+    orderLineItemRouter
 }

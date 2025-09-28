@@ -39,8 +39,7 @@
 ```json
 {
     "success": false,
-    "message": "Validation error",
-    "errors": "Product stock is not enough"
+    "errors": "[product_name] does not have enough stock for [quantity]"
 }
 ```
 
