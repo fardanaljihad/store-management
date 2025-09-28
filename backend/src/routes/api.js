@@ -54,6 +54,7 @@ orderLineItemRouter.post('/api/order-line-items', orderLineItemController.create
 orderLineItemRouter.get('/api/order-line-items', orderLineItemController.getAll);
 orderLineItemRouter.get('/api/order-line-items/:id', orderLineItemController.get);
 orderLineItemRouter.patch('/api/order-line-items/:id', orderLineItemController.update);
+orderLineItemRouter.delete('/api/order-line-items/:id', orderLineItemController.del);
 
 export {
     userRouter,

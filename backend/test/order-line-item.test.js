@@ -302,3 +302,66 @@ describe('PATCH /api/order-line-items/:id', function() {
         expect(result.body.errors).toBeDefined();
     }); 
 });
+
+describe('DELETE /api/order-line-items/:id', function() {
+    
+    beforeEach(async () => {
+        await createTestCategory();
+        const category = await getTestCategory();
+        await createTestProduct(category.id);
+        await createTestUser();
+        await createTestOrder();
+    });
+        
+    afterEach(async () => {
+        await removeTestLineItems();
+        await removeTestProduct();
+        await removeTestCategory();
+        await removeTestOrder();
+        await removeTestUser();
+    });
+
+    it('should delete an order line item', async () => {
+        const token = await generateTestToken();
+        const orderLineItem = await getTestOrderLineItem();
+
+        let product = await getTestProduct();
+
+        
+        console.log(product.stock);
+        
+
+        const result = await supertest(web)
+            .delete(`/api/order-line-items/${orderLineItem.id}`)
+            .set('Authorization', `Bearer ${token}`);
+        
+        logger.info(result.body);
+
+        expect(result.status).toBe(200);
+        expect(result.body.success).toBe(true);
+        expect(result.body.message).toBe("Order line item deleted successfully");
+        expect(result.body.data.id).toBe(orderLineItem.id);
+
+        // Verify stock is incremented
+        product = await getTestProduct();
+        expect(product.stock).toBe(100);
+
+        // Verify total in order
+        const order = await getTestOrder();
+        expect(order.total).toBe(0);
+    });
+
+    it('should reject delete when order line item not found', async () => {
+        const token = await generateTestToken();
+
+        const result = await supertest(web)
+            .delete('/api/order-line-items/9999')
+            .set('Authorization', `Bearer ${token}`);
+
+        logger.info(result.body);
+
+        expect(result.status).toBe(404);
+        expect(result.body.success).toBe(false);
+        expect(result.body.errors).toBeDefined();
+    }); 
+});

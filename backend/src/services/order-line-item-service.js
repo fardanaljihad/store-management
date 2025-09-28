@@ -1,7 +1,7 @@
 import { prismaClient } from "../applications/database.js";
 import { ResponseError } from "../errors/response-error.js";
 import orderLineItemRepository from "../repositories/order-line-item-repository.js";
-import { createOrderLineItemValidation, getAllOrderLineItemValidation, getOrderLineItemValidation, updateOrderLineItemValidation } from "../validations/order-line-item-validation.js";
+import { createOrderLineItemValidation, deleteOrderLineItemValidation, getAllOrderLineItemValidation, getOrderLineItemValidation, updateOrderLineItemValidation } from "../validations/order-line-item-validation.js";
 import { validate } from "../validations/validation.js"
 import orderService from "./order-service.js";
 
@@ -126,7 +126,7 @@ const update = async (id, quantity) => {
 
     const order = await orderService.get(orderLineItem.order_id);
     const newTotal = order.total - (orderLineItem.quantity * result.price) + (quantity * result.price);
-    
+
     await orderService.update(orderLineItem.order_id, newTotal);
 
     return prismaClient.orderLineItem.findUnique({
@@ -147,9 +147,22 @@ const update = async (id, quantity) => {
     });
 }
 
+const del = async (id) => {
+    id = validate(deleteOrderLineItemValidation, id);
+
+    const result = await orderLineItemRepository.deleteTransaction(id);
+
+    if (result instanceof ResponseError) {
+        throw result;
+    }
+
+    return result;
+}
+
 export default {
     create,
     getAll,
     get,
-    update
+    update,
+    del
 }

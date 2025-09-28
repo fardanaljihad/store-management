@@ -94,7 +94,77 @@ const updateTransaction = async (id, quantity, productId) => {
     });
 }
 
+const deleteTransaction = async (id) => {
+    return prismaClient.$transaction(async (tx) => {
+
+        // 1. Check order line item exists
+        const orderLineItem = await prismaClient.orderLineItem.findUnique({
+            where: { id },
+            select: {
+                order_id: true,
+                product_id: true,
+                quantity: true,
+                subtotal: true,
+            }
+        });
+
+        if (!orderLineItem) {
+            return new ResponseError(404, 'Order line item not found');
+        }
+
+        // 2. Lock the product row FOR UPDATE (row-level lock)
+        const [product] = await tx.$queryRaw`
+            SELECT *
+            FROM products
+            WHERE id = ${orderLineItem.product_id}
+            FOR UPDATE;
+        `;
+
+        if (!product) {
+            return new ResponseError(404, `Product with ID ${orderLineItem.product_id} not found`);
+        }
+
+        // 4. Increment product stock
+        await tx.product.update({
+            where: { 
+                id: orderLineItem.product_id 
+            },
+            data: { 
+                stock: { 
+                    increment: orderLineItem.quantity 
+                } 
+            }
+        });
+
+        // 5. Update order total
+        const newTotal = orderLineItem.subtotal;
+        await tx.order.update({
+            where: { id: orderLineItem.order_id },
+            data: { total: { decrement: newTotal } }
+        });
+
+        // 6. Delete the order line item
+        return tx.orderLineItem.delete({
+            where: { id },
+            select: { 
+                id: true,
+                order_id: true,
+                product: {
+                    select: {
+                        id: true,
+                        name: true,
+                        price: true
+                    } 
+                },
+                quantity: true,
+                subtotal: true
+            }
+        });
+    });
+}
+
 export default {
     createTransaction,
-    updateTransaction
+    updateTransaction,
+    deleteTransaction
 }

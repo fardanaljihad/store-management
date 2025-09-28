@@ -153,6 +153,11 @@ export const createTestOrder = async () => {
             created_at: new Date()
         }
     });
+
+    await prismaClient.product.update({
+        where: { id: (await getTestProduct()).id },
+        data: { stock: { decrement: 1 } }
+    });
 }
 
 export const getTestOrder = async () => {

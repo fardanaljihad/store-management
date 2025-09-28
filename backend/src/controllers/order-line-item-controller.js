@@ -52,9 +52,23 @@ const update = async (req, res, next) => {
     }
 }
 
+const del = async (req, res, next) => {
+    try {
+        const result = await orderLineItemService.del(req.params.id);
+        res.status(200).json({
+            success: true,
+            message: "Order line item deleted successfully",
+            data: result
+        });
+    } catch (e) {
+        next(e);
+    }
+}
+
 export default {
     create,
     getAll,
     get,
-    update
+    update,
+    del
 }
