@@ -2,8 +2,14 @@ import express from "express";
 import { categoryRouter, contactRouter, orderLineItemRouter, orderRouter, productRouter, userRouter } from "../routes/api.js";
 import { errorMiddleware } from "../middlewares/error-middleware.js";
 import { publicRouter } from "../routes/public-api.js";
+import cors from "cors";
 
 export const web = express();
+
+web.use(cors({
+    origin: "http://localhost:5173"
+}));
+
 web.use(express.json());
 
 web.use(publicRouter);

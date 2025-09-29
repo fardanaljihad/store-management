@@ -1,4 +1,4 @@
-import { prismaClient } from "../applications/database";
+import { prismaClient } from "../applications/database.js";
 import { ResponseError } from "../errors/response-error.js";
 import { createCategoryValidation, deleteCategoryValidation, getAllCategoriesValidation, getCategoryValidation, updateCategoryValidation } from "../validations/category-validation.js";
 import { validate } from "../validations/validation.js";

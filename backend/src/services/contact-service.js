@@ -1,6 +1,6 @@
 import { prismaClient } from "../applications/database.js";
 import { ResponseError } from "../errors/response-error.js";
-import { createContactValidation, deleteContactValidation, getAllContactsValidation, getContactValidation, updateContactValidation } from "../validations/contact-validation";
+import { createContactValidation, deleteContactValidation, getAllContactsValidation, getContactValidation, updateContactValidation } from "../validations/contact-validation.js";
 import { getUserValidation } from "../validations/user-validation.js"
 import { validate } from "../validations/validation.js"
 
