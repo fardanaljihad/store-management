@@ -117,17 +117,13 @@ const update = async (id, quantity) => {
 
     quantity = validate(updateOrderLineItemValidation, quantity);
 
-    const result = await orderLineItemRepository.updateTransaction(id, quantity, orderLineItem.product.id);
+    const diffQuantity = quantity - orderLineItem.quantity;
+    const result = await orderLineItemRepository.updateTransaction(id, orderLineItem.product.id, orderLineItem.order_id, quantity, diffQuantity);
     const orderLineItemId = result.id;
 
     if (result instanceof ResponseError) {
         throw result;
     }
-
-    const order = await orderService.get(orderLineItem.order_id);
-    const newTotal = order.total - (orderLineItem.quantity * result.price) + (quantity * result.price);
-
-    await orderService.update(orderLineItem.order_id, newTotal);
 
     return prismaClient.orderLineItem.findUnique({
         where: { id: orderLineItemId },

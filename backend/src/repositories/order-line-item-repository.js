@@ -50,7 +50,7 @@ const createTransaction = async (request) => {
     });
 }
 
-const updateTransaction = async (id, quantity, productId) => {
+const updateTransaction = async (id, productId, orderId, quantity, diffQuantity) => {
     return prismaClient.$transaction(async (tx) => {
         // 1. Lock the product row FOR UPDATE (row-level lock)
         const [product] = await tx.$queryRaw`
@@ -82,14 +82,20 @@ const updateTransaction = async (id, quantity, productId) => {
             },
             data: { 
                 stock: { 
-                    decrement: quantity 
+                    decrement: diffQuantity 
                 } 
             }
         });
+
+        // 4. Update order total
+        const newTotal = product.price * diffQuantity;
+        await tx.order.update({
+            where: { id: orderId },
+            data: { total: { increment: newTotal } }
+        });
         
         return { 
-            id,
-            price: product.price,
+            id
         };
     });
 }
@@ -131,7 +137,7 @@ const deleteTransaction = async (id) => {
             },
             data: { 
                 stock: { 
-                    increment: orderLineItem.quantity 
+                    increment: orderLineItem.quantity
                 } 
             }
         });
