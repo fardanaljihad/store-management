@@ -15,3 +15,11 @@ export const alertError = async (message) => {
         text: message,
     });
 }
+
+export const alertWarning = async (message) => {
+    return Swal.fire({
+        icon: "warning",
+        title: "Warning",
+        text: message,
+    });
+}

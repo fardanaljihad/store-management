@@ -26,3 +26,18 @@ export const userLogin = async ({username, password}) => {
         })
     });
 }
+
+export const userUpdate = async (token, username, {password, role}) => {
+    return await fetch(`${import.meta.env.VITE_API_PATH}/users/${username}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            password, 
+            role
+        })
+    });
+}

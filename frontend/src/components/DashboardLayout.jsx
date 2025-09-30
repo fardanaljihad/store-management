@@ -5,7 +5,7 @@ export default function DashboardLayout() {
         <div className="bg-gradient-to-br from-orange-100 via-amber-100 to-orange-100 min-h-screen flex flex-col">
             <header className="bg-gradient-to-br from-orange-500 via-orange-600 to-amber-500 shadow-lg">
                 <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-                <Link to="/dashboard/cashier" className="flex items-center hover:opacity-90 transition-opacity duration-200">
+                <Link to="/dashboard" className="flex items-center hover:opacity-90 transition-opacity duration-200">
                     <i className="fas fa-store text-white text-2xl mr-3"></i>
                     <div className="text-white font-bold text-xl">Store Management</div>
                 </Link>

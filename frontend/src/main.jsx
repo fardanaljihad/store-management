@@ -5,6 +5,7 @@ import Layout from './components/Layout.jsx'
 import UserRegister from './components/User/UserRegister.jsx'
 import UserLogin from './components/User/UserLogin.jsx'
 import DashboardLayout from './components/DashboardLayout.jsx'
+import UserProfile from './components/User/UserProfile.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -16,6 +17,7 @@ createRoot(document.getElementById('root')).render(
         </Route>
         <Route path='/dashboard' element={<DashboardLayout />}>
           <Route index element={<h1>Dashboard</h1>} />
+          <Route path='users/profile' element={<UserProfile />} />
         </Route>
       </Routes>
     </BrowserRouter>
