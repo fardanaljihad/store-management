@@ -5,28 +5,42 @@ export default function DashboardLayout() {
         <div className="bg-gradient-to-br from-orange-100 via-amber-100 to-orange-100 min-h-screen flex flex-col">
             <header className="bg-gradient-to-br from-orange-500 via-orange-600 to-amber-500 shadow-lg">
                 <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-                <Link to="/dashboard" className="flex items-center hover:opacity-90 transition-opacity duration-200">
-                    <i className="fas fa-store text-white text-2xl mr-3"></i>
-                    <div className="text-white font-bold text-xl">Store Management</div>
-                </Link>
-                <nav>
-                    <ul className="flex space-x-6">
-                    <li>
-                        <Link to="/dashboard/users/profile"
-                        className="text-gray-100 hover:text-white flex items-center transition-colors duration-200">
-                        <i className="fas fa-user-circle mr-2"></i>
-                        <span>Profile</span>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link to="/dashboard/users/logout"
-                            className="text-gray-100 hover:text-white flex items-center transition-colors duration-200">
-                            <i className="fas fa-sign-out-alt mr-2"></i>
-                            <span>Logout</span>
-                        </Link>
-                    </li>
-                    </ul>
-                </nav>
+                    <Link to="/dashboard" className="flex items-center text-white hover:text-black transition-colors duration-200">
+                        <i className="fas fa-store text-2xl mr-3"></i>
+                        <div className="font-bold text-xl">Store Management</div>
+                    </Link>
+                    <nav>
+                        <ul className="flex space-x-6">
+                            <li>
+                                <Link to="/dashboard/categories"
+                                    className="text-gray-100 hover:text-black flex items-center transition-colors duration-200">
+                                    <i className="fas fa-tags mr-2"></i>
+                                    <span>Category</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/dashboard/products"
+                                    className="text-gray-100 hover:text-black flex items-center transition-colors duration-200">
+                                    <i className="fas fa-box mr-2"></i>
+                                    <span>Product</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/dashboard/users/profile"
+                                    className="text-gray-100 hover:text-black flex items-center transition-colors duration-200">
+                                    <i className="fas fa-user-circle mr-2"></i>
+                                    <span>Profile</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to="/dashboard/users/logout"
+                                        className="text-gray-100 hover:text-black flex items-center transition-colors duration-200">
+                                        <i className="fas fa-sign-out-alt mr-2"></i>
+                                        <span>Logout</span>
+                                </Link>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </header>
 
