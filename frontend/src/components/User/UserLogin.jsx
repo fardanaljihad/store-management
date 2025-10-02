@@ -34,7 +34,7 @@ export default function UserLogin() {
 
     return <>
         <div
-            className="animate-fade-in bg-white bg-opacity-80 p-8 rounded-xl shadow-custom border border-gray-700 backdrop-blur-sm w-full max-w-md">
+            className="animate-fade-in bg-white bg-opacity-80 p-8 rounded-xl shadow-custom border border-orange-200 backdrop-blur-sm w-full max-w-md">
             <div className="text-center mb-8">
                 <div className="inline-block p-3 bg-amber-50 rounded-full mb-4">
                     <i className="fas fa-store text-3xl text-orange-600"></i>

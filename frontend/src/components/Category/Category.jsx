@@ -33,6 +33,7 @@ export default function Category() {
         if (response.status === 200) {
             setName("");
             await alertSuccess(responseBody.message);
+            await fetchCategories();
         } else {
             await alertError(responseBody.errors);
         }
@@ -44,7 +45,7 @@ export default function Category() {
     }, []);
 
     return <>
-        <div className="bg-white bg-opacity-80 rounded-md shadow-custom overflow-hidden mb-6 p-6">
+        <div className="bg-white bg-opacity-80 rounded-md shadow-custom overflow-hidden mb-6 p-6 animate-fade-in">
             <div className="flex items-center mb-4">
                 <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center mr-3 shadow-md">
                     <i className="fas fa-tags text-white"></i>
@@ -70,40 +71,36 @@ export default function Category() {
                         </button>
                     </div>
                 </form>
-                <form>
+                {/* <form>
                     <div className="mb-5 flex justify-end">
                         <input type="text" id="search" name="search"
                             className="w-1/3 pl-3 pr-3 py-3 bg-orange-100 bg-opacity-50 border border-orange-300 text-orange-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
                             placeholder="Search category...." required
                         />
                     </div>
-                </form>
+                </form> */}
             </div>
             
-            <table className="w-full text-sm text-left rtl:text-right dark:text-orange-300">
-                <thead className="text-xs text-orange-700 uppercase bg-orange-50 dark:bg-orange-900 dark:text-orange-300">
-                    <tr>
-                        <th scope="col" className="px-6 py-3">
-                            Category
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                            Total Product
-                        </th>
-                    </tr>
-                </thead>
-                <tbody className="text-orange-600">
-                    {categories.map((category) => (
-                        <tr key={category.id} className="bg-white border-b dark:bg-orange-950 dark:border-orange-800 border-orange-200">
-                            <th key={category.id} scope="row" className="px-6 py-4 font-medium whitespace-nowrap dark:text-orange-100">
-                                {category.name}
+            <div className="rounded-lg overflow-hidden">
+                <table className="w-full text-sm text-left rtl:text-right dark:text-orange-300">
+                    <thead className="text-xs text-white uppercase bg-orange-500 dark:bg-orange-900 dark:text-orange-300">
+                        <tr>
+                            <th scope="col" className="px-6 py-3">
+                                Category
                             </th>
-                            <td className="px-6 py-4">
-                                Soon
-                            </td>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody className="text-orange-600">
+                        {categories.map((category) => (
+                            <tr key={category.id} className="bg-white border-b dark:bg-orange-950 dark:border-orange-800 border-orange-200">
+                                <th key={category.id} scope="row" className="px-6 py-4 font-medium whitespace-nowrap dark:text-orange-100">
+                                    {category.name}
+                                </th>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </>
 }

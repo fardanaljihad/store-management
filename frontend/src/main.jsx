@@ -8,6 +8,7 @@ import DashboardLayout from './components/DashboardLayout.jsx'
 import UserProfile from './components/User/UserProfile.jsx'
 import UserLogout from './components/User/UserLogout.jsx'
 import Category from './components/Category/Category.jsx'
+import Product from './components/Product/Product.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -27,6 +28,10 @@ createRoot(document.getElementById('root')).render(
 
           <Route path='categories'>
             <Route index element={<Category />} />
+          </Route>
+
+          <Route path='products'>
+            <Route index element={<Product />} />
           </Route>
           
         </Route>
