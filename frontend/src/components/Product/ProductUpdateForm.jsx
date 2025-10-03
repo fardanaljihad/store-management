@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { alertError, alertSuccess } from "../../lib/alert.js";
 import { categoryList } from "../../lib/api/CategoryApi.js";
-import { productCreate } from "../../lib/api/ProductApi";
+import { productUpdate } from "../../lib/api/ProductApi.js";
 import { formatNumber, parseNumber } from "../../lib/utils.js";
 
-export default function ProductCreateForm({ token, onSuccess, onClose }) {
+export default function ProductUpdateForm({ token, onSuccess, onClose, initialData }) {
 
-    const [name, setName] = useState("");
-    const [price, setPrice] = useState("");
-    const [stock, setStock] = useState("");
-    const [categoryId, setCategoryId] = useState("");
+    const [name, setName] = useState(initialData.name || "");
+    const [price, setPrice] = useState(initialData.price || "");
+    const [stock, setStock] = useState(initialData.stock || "");
+    const [categoryId, setCategoryId] = useState(initialData.categoryId || "");
     const [categories, setCategories] = useState([]);
 
     async function fetchCategories() {
@@ -27,7 +27,7 @@ export default function ProductCreateForm({ token, onSuccess, onClose }) {
     async function handleSubmit(e) {
         e.preventDefault();
         
-        const response = await productCreate(token, {
+        const response = await productUpdate(token, initialData.id, {
             name,
             price,
             stock,
@@ -166,7 +166,7 @@ export default function ProductCreateForm({ token, onSuccess, onClose }) {
                             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
                              font-medium shadow-md flex justify-center items-center"
                 >
-                <i className="fas fa-plus mr-2"></i> Add
+                <i className="fas fa-pencil-alt mr-2"></i> Update
             </button>
         </div>
     </form>

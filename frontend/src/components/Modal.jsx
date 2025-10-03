@@ -1,31 +1,13 @@
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { cloneElement, useState } from 'react';
 
-export default function Modal({openButtonText, title, subtitle, children}) {
+export default function Modal({open, onClose, title, subtitle, children}) {
 
-    const [isOpen, setIsOpen] = useState(false)
-
-    function handleOpen() {
-        setIsOpen(true);
-    }
-
-    function handleClose() {
-        setIsOpen(false);
-    }
+    if (!open) return null;
 
     return <>
-        <div className='flex justify-end'>
-            <Button
-                onClick={handleOpen}
-                className="mb-4 rounded-md bg-green-500 px-4 py-3 text-sm font-medium text-white 
-                        hover:bg-green-600 focus:outline-none"
-            >
-                {openButtonText}
-            </Button>
-        </div>
-
-        <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={handleClose}>
-            <div className="fixed inset-0 z-10 w-screen overflow-y-auto bg-orange-500 bg-opacity-20 animate-fade-in">
+        <Dialog open={open} as="div" className="relative z-10 focus:outline-none" onClose={onClose}>
+            <div className="fixed inset-0 z-10 w-screen overflow-y-auto bg-black bg-opacity-40 animate-fade-in">
                 <div className="flex min-h-full items-center justify-center p-4">
                     <DialogPanel
                         className="w-full max-w-md rounded-xl 
@@ -42,7 +24,7 @@ export default function Modal({openButtonText, title, subtitle, children}) {
                             
                             <button
                                 type="button"
-                                onClick={handleClose}
+                                onClick={onClose}
                                 className="text-red-600 hover:text-red-800 focus:outline-none ml-4"
                             >
                                 <i className="fas fa-times text-lg"></i>
@@ -50,7 +32,7 @@ export default function Modal({openButtonText, title, subtitle, children}) {
                         </div>
 
 
-                        {children && cloneElement(children, { onClose: handleClose })}
+                        {children && cloneElement(children, { onClose })}
 
                     </DialogPanel>
                 </div>

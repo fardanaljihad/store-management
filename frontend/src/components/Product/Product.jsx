@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react"
 import { useLocalStorage } from "react-use";
-import { productList } from "../../lib/api/ProductApi.js";
-import { alertError } from "../../lib/alert.js";
+import { productDelete, productList } from "../../lib/api/ProductApi.js";
+import { alertConfirm, alertError, alertSuccess } from "../../lib/alert.js";
 import Modal from "../Modal.jsx";
 import ProductCreateForm from "./ProductCreateForm.jsx";
-import { formatNumber } from "../../lib/utils.js";
+import ProductTable from "./ProductTable.jsx";
+import ProductUpdateForm from "./ProductUpdateForm.jsx";
 
 export default function Product() {
 
     const [products, setProducts] = useState([]);
+    const [openCreateModal, setOpenCreateModal] = useState(false);
+    const [openEditModal, setOpenEditModal] = useState(false);
+    const [editProduct, setEditProduct] = useState({});
+    const [reload, setReload] = useState(true);
     const [token, _] = useLocalStorage("token", "");
 
     async function fetchProducts() {
@@ -23,10 +28,38 @@ export default function Product() {
         }
     }
 
+    async function handleEdit(product) {
+        setEditProduct({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            stock: product.stock,
+            categoryId: product.category.id
+        });
+
+        setOpenEditModal(true);
+    }
+
+    async function handleDelete(productId) {
+        if (!await alertConfirm("Are you sure you want to delete this product?")) {
+            return;
+        }
+
+        const response = await productDelete(token, productId);
+
+        const responseBody = await response.json();
+
+        if (response.status === 200) {
+            await alertSuccess(responseBody.message);
+            setReload(!reload);
+        } else {
+            await alertError(responseBody.errors);
+        }
+    }
+
     useEffect(() => {
-        fetchProducts()
-            .then(() => console.log("Products fetched"));
-    }, []);
+        fetchProducts();
+    }, [reload]);
 
     return <>
         <div className="bg-white bg-opacity-80 rounded-md shadow-custom overflow-hidden mb-6 p-6 animate-fade-in">
@@ -37,46 +70,43 @@ export default function Product() {
                 <h2 className="text-xl font-semibold text-orange-500">Product</h2>
             </div>
 
+            {/* Create Product Modal Button */}
+            <div className='flex justify-end'>
+                <button
+                    onClick={() => setOpenCreateModal(true)}
+                    className="mb-4 rounded-md bg-green-500 px-4 py-3 text-sm font-medium text-white 
+                            hover:bg-green-600 focus:outline-none"
+                >
+                    Add New Product
+                </button>
+            </div>
+
+            {/* Create Product Modal */}
             <Modal
-                openButtonText="Add new product"
+                open={openCreateModal}
+                onClose={() => setOpenCreateModal(false)}
                 title="Add New Product"
                 subtitle="Fill the form to add your product"
             >
-                <ProductCreateForm token={token} onSuccess={fetchProducts} />
+                <ProductCreateForm token={token} onSuccess={() => setReload(!reload)} />
             </Modal>
-            
-            <div className="rounded-md overflow-hidden">
-                <table className="w-full text-sm text-left rtl:text-right dark:text-orange-300">
-                    <thead className="text-xs text-white uppercase bg-orange-500 dark:bg-orange-900 dark:text-orange-300">
-                        <tr>
-                            <th scope="col" className="px-6 py-3">
-                                Product
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Price
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Stock
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className="text-orange-600">
-                        {products.map((product) => (
-                            <tr key={product.id} className="bg-white border-b dark:bg-orange-950 dark:border-orange-800 border-orange-200">
-                                <th key={product.id} scope="row" className="px-6 py-4 font-medium whitespace-nowrap dark:text-orange-100">
-                                    {product.name}
-                                </th>
-                                <td className="px-6 py-4"> 
-                                    {`Rp${formatNumber(product.price)}`}
-                                </td>
-                                <td className="px-6 py-4">
-                                    {formatNumber(product.stock)}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+
+            {/* Edit Product Modal */}
+            <Modal
+                open={openEditModal}
+                onClose={() => setOpenEditModal(false)}
+                title="Edit Product"
+                subtitle="Update the form to edit your product"
+            >
+                <ProductUpdateForm token={token} onSuccess={() => setReload(!reload)} initialData={editProduct}/>
+            </Modal>
+
+            <ProductTable 
+                token={token} 
+                productList={products} 
+                onProductDeleted={handleDelete} 
+                onProductEdited={handleEdit}
+            />
         </div>
     </>
 }
