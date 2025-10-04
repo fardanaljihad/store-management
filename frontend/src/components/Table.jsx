@@ -46,7 +46,7 @@ export default function Table({ columns, data, onRowEdit, onRowDelete }) {
                                 </td>
                             ))}
                             {(onRowEdit || onRowDelete) && (
-                                <td className="px-6 py-4 text-center">
+                                <td className="px-6 py-4 text-center w-1/4">
                                     <div className="flex justify-center gap-2">
                                         {onRowEdit && (
                                         <button

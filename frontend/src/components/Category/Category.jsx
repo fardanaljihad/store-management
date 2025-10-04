@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
-import { categoryList, createCategory } from "../../lib/api/CategoryApi.js";
+import { categoryDelete, categoryList, createCategory } from "../../lib/api/CategoryApi.js";
 import { useLocalStorage } from "react-use";
-import { alertError, alertSuccess } from "../../lib/alert";
+import { alertConfirm, alertError, alertSuccess } from "../../lib/alert.js";
+import CategoryTable from "./CategoryTable.jsx";
+import CategoryUpdateForm from "./CategoryUpdateForm.jsx";
+import Modal from "../Modal.jsx";
 
 export default function Category() {
 
     const [name, setName] = useState("");
     const [categories, setCategories] = useState([]);
+    const [openEditModal, setOpenEditModal] = useState(false);
+    const [category, setCategory] = useState({});
+    const [reload, setReload] = useState(true);
     const [token, _] = useLocalStorage("token", "");
 
     async function fetchCategories() {
@@ -39,10 +45,37 @@ export default function Category() {
         }
     }
 
+    async function handleDelete(categoryId) {
+        console.log("Delete category", categoryId);
+        if (!await alertConfirm("Are you sure you want to delete this category?")) {
+            return;
+        }
+
+        const response = await categoryDelete(token, categoryId);
+
+        const responseBody = await response.json();
+
+        if (response.status === 200) {
+            await alertSuccess(responseBody.message);
+            await fetchCategories();
+        } else {
+            await alertError(responseBody.errors);
+        }
+    }
+
+    function handleEdit(category) {
+        console.log("Edit category", category);
+        setCategory({
+            id: category.id,
+            name: category.name
+        });
+        setOpenEditModal(true);
+    }
+
     useEffect(() => {
         fetchCategories()
             .then(() => console.log("Categories fetched"));
-    }, []);
+    }, [reload]);
 
     return <>
         <div className="bg-white bg-opacity-80 rounded-md shadow-custom overflow-hidden mb-6 p-6 animate-fade-in">
@@ -71,36 +104,28 @@ export default function Category() {
                         </button>
                     </div>
                 </form>
-                {/* <form>
-                    <div className="mb-5 flex justify-end">
-                        <input type="text" id="search" name="search"
-                            className="w-1/3 pl-3 pr-3 py-3 bg-orange-100 bg-opacity-50 border border-orange-300 text-orange-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-all duration-200"
-                            placeholder="Search category...." required
-                        />
-                    </div>
-                </form> */}
             </div>
             
-            <div className="rounded-lg overflow-hidden">
-                <table className="w-full text-sm text-left rtl:text-right dark:text-orange-300">
-                    <thead className="text-xs text-white uppercase bg-orange-500 dark:bg-orange-900 dark:text-orange-300">
-                        <tr>
-                            <th scope="col" className="px-6 py-3">
-                                Category
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className="text-orange-600">
-                        {categories.map((category) => (
-                            <tr key={category.id} className="bg-white border-b dark:bg-orange-950 dark:border-orange-800 border-orange-200">
-                                <th key={category.id} scope="row" className="px-6 py-4 font-medium whitespace-nowrap dark:text-orange-100">
-                                    {category.name}
-                                </th>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+            {/* Edit Category Modal */}
+            <Modal
+                open={openEditModal}
+                onClose={() => setOpenEditModal(false)}
+                title="Edit category"
+                subtitle="Update the form to edit your category"
+            >
+                <CategoryUpdateForm 
+                    key={category.id} 
+                    token={token} 
+                    onSuccess={() => setReload(!reload)} 
+                    category={category}
+                />
+            </Modal>
+
+            <CategoryTable
+                categoryList={categories} 
+                onCategoryDeleted={handleDelete} 
+                onCategoryEdited={handleEdit}
+            />
         </div>
     </>
 }

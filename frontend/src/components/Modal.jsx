@@ -1,12 +1,12 @@
-import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import { cloneElement, useState } from 'react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { cloneElement, useRef } from 'react';
 
 export default function Modal({open, onClose, title, subtitle, children}) {
 
-    if (!open) return null;
+    const initialFocusRef = useRef(null);
 
     return <>
-        <Dialog open={open} as="div" className="relative z-10 focus:outline-none" onClose={onClose}>
+        <Dialog open={open} as="div" className="relative z-10 focus:outline-none" onClose={onClose} initialFocus={initialFocusRef}>
             <div className="fixed inset-0 z-10 w-screen overflow-y-auto bg-black bg-opacity-40 animate-fade-in">
                 <div className="flex min-h-full items-center justify-center p-4">
                     <DialogPanel
@@ -32,7 +32,7 @@ export default function Modal({open, onClose, title, subtitle, children}) {
                         </div>
 
 
-                        {children && cloneElement(children, { onClose })}
+                        {children && cloneElement(children, { initialFocusRef, onClose })}
 
                     </DialogPanel>
                 </div>

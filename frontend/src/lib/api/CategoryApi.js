@@ -26,3 +26,27 @@ export const categoryList = async (token, {page, limit} = {}) => {
         }
     });
 }
+
+export const categoryDelete = async (token, categoryId) => {
+    return await fetch(`${import.meta.env.VITE_API_PATH}/categories/${categoryId}`, {
+        method: "DELETE",
+        headers: {
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+}
+
+export const categoryUpdate = async (token, categoryId, {name}) => {
+    return await fetch(`${import.meta.env.VITE_API_PATH}/categories/${categoryId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            name
+        })
+    });
+}
