@@ -46,7 +46,6 @@ export default function Category() {
     }
 
     async function handleDelete(categoryId) {
-        console.log("Delete category", categoryId);
         if (!await alertConfirm("Are you sure you want to delete this category?")) {
             return;
         }
@@ -64,17 +63,16 @@ export default function Category() {
     }
 
     function handleEdit(category) {
-        console.log("Edit category", category);
         setCategory({
             id: category.id,
             name: category.name
         });
+        
         setOpenEditModal(true);
     }
 
     useEffect(() => {
-        fetchCategories()
-            .then(() => console.log("Categories fetched"));
+        fetchCategories();
     }, [reload]);
 
     return <>
@@ -113,8 +111,7 @@ export default function Category() {
                 title="Edit category"
                 subtitle="Update the form to edit your category"
             >
-                <CategoryUpdateForm 
-                    key={category.id} 
+                <CategoryUpdateForm
                     token={token} 
                     onSuccess={() => setReload(!reload)} 
                     category={category}

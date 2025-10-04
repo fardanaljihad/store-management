@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { flushSync } from 'react-dom';
 import { alertError, alertSuccess } from "../../lib/alert.js";
 import { categoryUpdate } from "../../lib/api/CategoryApi.js";
 
-export default function CategoryUpdateForm({ initialFocusRef, token, onSuccess, onClose, category }) {
+export default function CategoryUpdateForm({ token, onSuccess, category, initialFocusRef, onClose }) {
 
     const [id, setId] = useState(category.id || "");
     const [name, setName] = useState(category.name || "");
