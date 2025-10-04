@@ -4,7 +4,7 @@ import { categoryList } from "../../lib/api/CategoryApi.js";
 import { productUpdate } from "../../lib/api/ProductApi.js";
 import { formatNumber, parseNumber } from "../../lib/utils.js";
 
-export default function ProductUpdateForm({ token, onSuccess, onClose, initialData }) {
+export default function ProductUpdateForm({ token, onSuccess, initialData, initialFocusRef, onClose }) {
 
     const [name, setName] = useState(initialData.name || "");
     const [price, setPrice] = useState(initialData.price || "");
@@ -46,7 +46,9 @@ export default function ProductUpdateForm({ token, onSuccess, onClose, initialDa
 
             onSuccess();
 
-            await alertSuccess(responseBody.message);
+            setTimeout(() => {
+                alertSuccess(responseBody.message);
+            }, 1);
         } else {
             await alertError(responseBody.errors);
         }
@@ -67,6 +69,7 @@ export default function ProductUpdateForm({ token, onSuccess, onClose, initialDa
                         <i className="fas fa-box text-orange-400"></i>
                     </div>
                     <input
+                        ref={initialFocusRef}
                         type="text"
                         id="name"
                         name="name"

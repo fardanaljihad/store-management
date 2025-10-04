@@ -88,7 +88,10 @@ export default function Product() {
                 title="Add New Product"
                 subtitle="Fill the form to add your product"
             >
-                <ProductCreateForm token={token} onSuccess={() => setReload(!reload)} />
+                <ProductCreateForm 
+                    token={token} 
+                    onSuccess={() => setReload(!reload)} 
+                />
             </Modal>
 
             {/* Edit Product Modal */}
@@ -98,7 +101,11 @@ export default function Product() {
                 title="Edit Product"
                 subtitle="Update the form to edit your product"
             >
-                <ProductUpdateForm token={token} onSuccess={() => setReload(!reload)} initialData={editProduct}/>
+                <ProductUpdateForm 
+                    token={token} 
+                    onSuccess={() => setReload(!reload)} 
+                    initialData={editProduct}
+                />
             </Modal>
 
             <ProductTable 
