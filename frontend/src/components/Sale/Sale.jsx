@@ -76,7 +76,7 @@ export default function Sale() {
 
     return <>
         <div className="flex items-center mb-6">
-            <i className="fas fa-cart-shopping text-orange-500 text-2xl mr-3"></i>
+            <i className="fas fa-cart-shopping text-white text-2xl mr-3"></i>
             <h1 className="text-2xl font-bold text-white">Sales</h1>
         </div>
 

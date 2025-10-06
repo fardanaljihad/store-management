@@ -2,7 +2,7 @@ import { Link, Outlet } from "react-router";
 
 export default function DashboardLayout() {
     return <>
-        <div className="bg-gradient-to-br from-[#0d0b08] via-[#1a1410] to-[#2a1f15] min-h-screen flex flex-col">
+        <div className="bg-gradient-to-br from-orange-800 to-amber-600 min-h-screen flex flex-col">
             <header className="bg-gradient-to-br from-orange-500 via-orange-600 to-amber-500 shadow-lg">
                 <div className="container mx-auto px-4 py-4 flex justify-between items-center">
                     <Link to="/dashboard" className="flex items-center text-white hover:text-black transition-colors duration-200">

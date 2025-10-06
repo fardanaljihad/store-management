@@ -62,20 +62,19 @@ export default function Product() {
     }, [reload]);
 
     return <>
-        <div className="bg-white bg-opacity-80 rounded-md shadow-custom overflow-hidden mb-6 p-6 animate-fade-in">
-            <div className="flex items-center">
-                <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center mr-3 shadow-md">
-                    <i className="fas fa-box text-white"></i>
-                </div>
-                <h2 className="text-xl font-semibold text-orange-500">Product</h2>
-            </div>
-
+        <div className="flex items-center mb-6">
+            <i className="fas fa-box text-white text-2xl mr-3"></i>
+            <h1 className="text-2xl font-bold text-white">Product</h1>
+        </div>
+        <div className="bg-orange-400/30 backdrop-blur-xl rounded-md shadow-custom overflow-hidden mb-6 p-6 animate-fade-in
+            backdrop-blur-xl border border-white/30 shadow-inner"
+        >
             {/* Create Product Modal Button */}
             <div className='flex justify-end'>
                 <button
                     onClick={() => setOpenCreateModal(true)}
-                    className="mb-4 rounded-md bg-green-500 px-4 py-3 text-sm font-medium text-white 
-                            hover:bg-green-600 focus:outline-none"
+                    className="mb-4 rounded-md bg-green-600 px-4 py-3 text-sm font-medium text-white 
+                            hover:bg-green-800 focus:outline-none border border-white/30"
                 >
                     Add New Product
                 </button>

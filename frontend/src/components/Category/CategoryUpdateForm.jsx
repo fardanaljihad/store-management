@@ -62,9 +62,9 @@ export default function CategoryUpdateForm({ token, onSuccess, category, initial
         <div className="flex justify-end items-center gap-3">
             <button
                 type="submit"
-                className="w-1/3 bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 
+                className="w-1/3 bg-blue-600 backdrop-blur-lg text-white py-3 px-4 rounded-lg hover:bg-blue-800 
                             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
-                             font-medium shadow-md flex justify-center items-center"
+                            font-medium shadow-md flex justify-center items-center border border-white/30"
                 >
                 <i className="fas fa-pencil-alt mr-2"></i> Update
             </button>

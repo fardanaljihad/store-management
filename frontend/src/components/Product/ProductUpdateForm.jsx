@@ -165,7 +165,7 @@ export default function ProductUpdateForm({ token, onSuccess, initialData, initi
         <div className="flex justify-end items-center gap-3">
             <button
                 type="submit"
-                className="w-1/4 bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 
+                className="w-1/3 bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 
                             focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
                              font-medium shadow-md flex justify-center items-center"
                 >
