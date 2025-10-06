@@ -9,6 +9,7 @@ import UserProfile from './components/User/UserProfile.jsx'
 import UserLogout from './components/User/UserLogout.jsx'
 import Category from './components/Category/Category.jsx'
 import Product from './components/Product/Product.jsx'
+import Sale from './components/Sale/Sale.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -33,7 +34,11 @@ createRoot(document.getElementById('root')).render(
           <Route path='products'>
             <Route index element={<Product />} />
           </Route>
-          
+
+          <Route path='sales'>
+            <Route index element={<Sale />} />
+          </Route>
+
         </Route>
       </Routes>
     </BrowserRouter>

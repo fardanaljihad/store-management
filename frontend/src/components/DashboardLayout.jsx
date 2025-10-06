@@ -2,7 +2,7 @@ import { Link, Outlet } from "react-router";
 
 export default function DashboardLayout() {
     return <>
-        <div className="bg-gradient-to-br from-orange-100 via-amber-100 to-orange-100 min-h-screen flex flex-col">
+        <div className="bg-gradient-to-br from-[#0d0b08] via-[#1a1410] to-[#2a1f15] min-h-screen flex flex-col">
             <header className="bg-gradient-to-br from-orange-500 via-orange-600 to-amber-500 shadow-lg">
                 <div className="container mx-auto px-4 py-4 flex justify-between items-center">
                     <Link to="/dashboard" className="flex items-center text-white hover:text-black transition-colors duration-200">
@@ -11,6 +11,13 @@ export default function DashboardLayout() {
                     </Link>
                     <nav>
                         <ul className="flex space-x-6">
+                            <li>
+                                <Link to="/dashboard/sales"
+                                    className="text-gray-100 hover:text-black flex items-center transition-colors duration-200">
+                                    <i className="fas fa-cart-shopping mr-2"></i>
+                                    <span>Sale</span>
+                                </Link>
+                            </li>
                             <li>
                                 <Link to="/dashboard/categories"
                                     className="text-gray-100 hover:text-black flex items-center transition-colors duration-200">

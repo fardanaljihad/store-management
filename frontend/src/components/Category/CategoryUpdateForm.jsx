@@ -26,7 +26,7 @@ export default function CategoryUpdateForm({ token, onSuccess, category, initial
             
             setTimeout(() => {
                 alertSuccess(responseBody.message);
-            }, 1);
+            }, 1); // Ensures the DOM (onClose) is fully rendered before executing alertSuccess, preventing aria-hidden warnings
         } else {
             await alertError(responseBody.errors);
         }
