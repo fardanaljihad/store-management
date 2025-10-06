@@ -327,10 +327,6 @@ describe('DELETE /api/order-line-items/:id', function() {
 
         let product = await getTestProduct();
 
-        
-        console.log(product.stock);
-        
-
         const result = await supertest(web)
             .delete(`/api/order-line-items/${orderLineItem.id}`)
             .set('Authorization', `Bearer ${token}`);

@@ -20,7 +20,7 @@ const createTransaction = async (request) => {
             INSERT INTO order_line_items (order_id, product_id, quantity, subtotal)
             SELECT ${request.order_id}, p.id, ${request.quantity}, p.price * ${request.quantity}
             FROM products p
-            WHERE p.stock >= ${request.quantity};
+            WHERE p.id = ${request.product_id} AND p.stock >= ${request.quantity};
         `;
 
         if (count === 0) {

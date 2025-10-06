@@ -19,7 +19,7 @@ const createOrderLineItem = async (tx, orderId, item) => {
         INSERT INTO order_line_items (order_id, product_id, quantity, subtotal)
         SELECT ${orderId}, p.id, ${item.quantity}, p.price * ${item.quantity}
         FROM products p
-        WHERE p.stock >= ${item.quantity};
+        WHERE p.id = ${item.product_id} AND p.stock >= ${item.quantity};
     `;
     
     if (count === 0) {
