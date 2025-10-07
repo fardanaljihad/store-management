@@ -1,12 +1,6 @@
 # Store Management (POS System)
 
-A full-stack application for managing store operations: products, categories, orders/sales, users, and contacts.
-
-This repository includes the backend (ExpressJS) and frontend (ReactJS) modules of the project.
-
-The backend uses **JWT (JSON Web Token)** for secure authentication and authorization.
-
-The REST API has been thoroughly tested using **Jest**, and its documentation is available [here](https://github.com/fardanaljihad/store-management/tree/main/backend/docs).
+A full-stack application for managing store operations: products, categories, orders/sales, users, and contacts. This repository includes the backend (ExpressJS) and frontend (ReactJS) modules of the project. The backend uses **JWT (JSON Web Token)** for secure authentication and authorization. The REST API has been thoroughly tested using **Jest**, and its documentation is available [here](https://github.com/fardanaljihad/store-management/tree/main/backend/docs).
 
 ## Prerequisites
 1. Node.js v22.12.0
@@ -64,3 +58,5 @@ Start the frontend application.
 ```bash
 npm run dev
 ```
+
+You can open `http://localhost:5173/login` in your browser to access the Store Management application.
