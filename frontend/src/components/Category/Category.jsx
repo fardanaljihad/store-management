@@ -76,30 +76,31 @@ export default function Category() {
     }, [reload]);
 
     return <>
-        <div className="flex items-center mb-6">
-            <i className="fas fa-tags text-white text-2xl mr-3"></i>
-            <h1 className="text-2xl font-bold text-white">Category</h1>
+        <div className="flex items-center mb-6 text-orange-500">
+            <i className="fas fa-tags text-2xl mr-3"></i>
+            <h1 className="text-2xl font-bold">Category</h1>
         </div>
         
         <div className="relative rounded-lg overflow-hidden mb-6 p-6 animate-fade-in
-            bg-orange-400/30 backdrop-blur-xl border border-white/30 shadow-inner"
+            bg-gradient-to-br from-orange-500/90 via-amber-500/80 to-orange-400/70 backdrop-blur-xl border border-white/10"
         >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="mb-5">
                         <div>
                             <input type="text" id="name" name="name"
-                                className="w-full pl-3 pr-3 py-3 bg-orange-400/30 backdrop-blur-lg border border-white/30 text-white placeholder-white/70 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-white transition-all duration-200"
+                                className="w-full pl-3 pr-3 py-3 bg-white/30 backdrop-blur-lg border border-white/30 text-white placeholder-white/70 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-white transition-all duration-200"
                                 placeholder="Enter category name" required
                                 value={name} onChange={(e) => setName(e.target.value)}/>
                         </div>
                     </div>
 
-                    <div className="flex justify-start mb-6">
+                    <div className="flex justify-start mb-5">
                         <button type="submit"
-                            className="w-1/8 py-3 px-4 rounded-lg font-medium text-white bg-orange-400/30 backdrop-blur-lg border border-white/30 hover:bg-orange-400/40 hover:text-white shadow-md transition-all duration-200 transform hover:-translate-y-0.5"
+                            className="w-1/8 py-3 px-4 rounded-lg font-medium text-white bg-green-600 font-medium
+                                hover:bg-green-800 focus:outline-none border border-white/30 text-md"
                         >
-                            <i className="fas fa-plus mr-2"></i> Create
+                            <i className="fas fa-plus mr-1"></i> Create
                         </button>
                     </div>
                 </form>

@@ -100,13 +100,13 @@ export default function UserProfile() {
     
     return <>
         <div className="flex items-center mb-6">
-            <i className="fas fa-user-cog text-white text-2xl mr-3"></i>
-            <h1 className="text-2xl font-bold text-white">My Profile</h1>
+            <i className="fas fa-user-cog text-orange-500 text-2xl mr-3"></i>
+            <h1 className="text-2xl font-bold text-orange-500">My Profile</h1>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div
-                className="bg-orange-400/30 backdrop-blur-xl border border-white/30 shadow-inner rounded-md shadow-custom overflow-hidden card-hover animate-fade-in">
+                className="bg-gradient-to-br from-orange-500/90 via-amber-500/80 to-orange-400/70 backdrop-blur-xl border border-white/10 shadow-inner rounded-md shadow-custom overflow-hidden card-hover animate-fade-in">
                 <div className="p-6">
                     <div className="flex items-center mb-4">
                         <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center mr-3 shadow-md">
@@ -174,7 +174,7 @@ export default function UserProfile() {
             </div>
 
             <div
-                className="bg-orange-400/30 backdrop-blur-xl border border-white/30 shadow-inner rounded-md shadow-custom overflow-hidden card-hover animate-fade-in">
+                className="bg-gradient-to-br from-orange-500/90 via-amber-500/80 to-orange-400/70 backdrop-blur-xl border border-white/10 shadow-inner rounded-md shadow-custom overflow-hidden card-hover animate-fade-in">
                 <div className="p-6">
                     <div className="flex items-center mb-4">
                         <div className="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center mr-3 shadow-md">

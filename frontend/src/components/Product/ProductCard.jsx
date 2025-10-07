@@ -11,13 +11,11 @@ export default function ProductCard({ product, handleAddToCart, reload }) {
     }, [reload]);
 
     return (
-        <div className="relative group transition-all duration-300">
+        <div className="relative group transition-all duration-300 animate-fade-in">
             <div
-                className="relative p-5 rounded-2xl 
-                    bg-gradient-to-br from-[#ff8a00]/50 via-[#ff6a00]/40 to-[#ff4500]/30 
-                    backdrop-blur-2xl 
-                    border border-white/20 
-                    transition-all duration-500"
+                className="relative p-5 rounded-2xl transition-all duration-500
+                    bg-gradient-to-br from-orange-500/90 via-amber-500/80 to-orange-400/70
+                    backdrop-blur-xl border border-white/10"
             >
                 <Link
                     to={`/dashboard/products/${product.id}`}
@@ -25,8 +23,8 @@ export default function ProductCard({ product, handleAddToCart, reload }) {
                 >
                     <div className="flex flex-col items-center text-center">
                         <div className="w-36 h-36 mb-4 rounded-xl overflow-hidden 
-                        bg-white/15 backdrop-blur-sm 
-                        border border-white/25 shadow-inner">
+                        bg-orange-500/30 backdrop-blur-md
+                        border border-white/20 shadow-inner">
                             <img
                                 src="https://pointcoffee.id/wp-content/uploads/2023/08/500x500_PC-PRODUCT-04.jpg"
                                 alt={product.name}
@@ -34,17 +32,16 @@ export default function ProductCard({ product, handleAddToCart, reload }) {
                             />
                         </div>
 
-                        <h2 className="text-xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">
+                        <h2 className="text-xl font-bold text-white">
                             {product.name}
                         </h2>
-                        <p className="text-lg font-semibold text-amber-200 mt-1">
+                        <p className="text-lg font-semibold text-white mt-1">
                             Rp{formatNumber(product.price)}
                         </p>
                     </div>
                 </Link>
 
-                <div className="mt-4 bg-gradient-to-br from-[#ff8a00]/40 via-[#ff6a00]/30 to-[#ff4500]/20 
-                        backdrop-blur-2xl border border-white/20 rounded-xl p-4 
+                <div className="mt-4 bg-orange-500/30 backdrop-blur-xl border border-white/30 rounded-xl p-4 
                         shadow-inner relative z-10 space-y-3"
                 >
                     <div className="flex items-center justify-between">
@@ -82,8 +79,7 @@ export default function ProductCard({ product, handleAddToCart, reload }) {
                                     setQuantity(val === "" ? "" : Number(val));
                                 }}
                                 className="w-16 px-2 py-1 rounded-md bg-white/25 
-                                    text-gray-900 text-center 
-                                    border border-white/30 
+                                    text-white text-center border border-white/30
                                     focus:outline-none focus:ring-2 focus:ring-orange-400 
                                     focus:bg-white/50 transition-all duration-200"
                             />
@@ -110,12 +106,12 @@ export default function ProductCard({ product, handleAddToCart, reload }) {
                         onClick={() => handleAddToCart(product, quantity)}
                         disabled={product.stock === 0}
                         className={`w-full mt-3 py-2 rounded-lg font-semibold text-white flex items-center justify-center shadow-md transition-all duration-300 ${product.stock === 0
-                                ? "bg-gray-400/40 cursor-not-allowed"
-                                : "bg-gradient-to-r from-[#ff7a00]/90 to-[#ff5500]/90 hover:from-[#ff8a00] hover:to-[#ff4500]"
+                            ? "bg-gray-400/40 cursor-not-allowed"
+                            : "bg-orange-600/50 backdrop-blur-md border border-white/20 hover:bg-orange-600/80"
                             }`}
                     >
                         <i className="fas fa-shopping-cart mr-2"></i>
-                        {product.stock === 0 ? "Stok Habis" : "Tambah ke Keranjang"}
+                        {product.stock === 0 ? "Out of Stock" : "Add to Cart"}
                     </button>
                 </div>
             </div>

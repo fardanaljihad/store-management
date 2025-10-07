@@ -2,8 +2,9 @@ export default function Table({ columns, data, onRowEdit, onRowDelete }) {
     return <>
         <div className="rounded-lg overflow-hidden">
             <table className="w-full text-sm text-left rtl:text-right dark:text-orange-300">
-                <thead className="text-sm text-white uppercase bg-gradient-to-br from-orange-400/40 via-amber-400/30 to-orange-300/20 
-                    backdrop-blur-xl border border-white/20 rounded-t-lg">
+                <thead className="text-sm text-white uppercase rounded-t-lg
+                    bg-orange-500/80 backdrop-blur-lg border border-white/20"
+                >
                     <tr>
                         {columns.map((col) => (
                             <th key={col.key} scope="col" 
@@ -25,11 +26,11 @@ export default function Table({ columns, data, onRowEdit, onRowDelete }) {
                         )}
                     </tr>
                 </thead>
-                <tbody className="text-orange-100">
+                <tbody className="text-orange-600">
                     {data.map((row) => (
                         <tr
                             key={row.id}
-                            className="bg-orange-400/40 border-b text-white dark:bg-orange-950 dark:border-orange-800 border-orange-200"
+                            className="bg-white border-b dark:bg-orange-950 dark:border-orange-800 border-orange-200"
                         >
                             {columns.map((col, idx) => (
                                 <td

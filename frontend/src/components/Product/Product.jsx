@@ -63,20 +63,20 @@ export default function Product() {
 
     return <>
         <div className="flex items-center mb-6">
-            <i className="fas fa-box text-white text-2xl mr-3"></i>
-            <h1 className="text-2xl font-bold text-white">Product</h1>
+            <i className="fas fa-box text-orange-500 text-2xl mr-3"></i>
+            <h1 className="text-2xl font-bold text-orange-500">Product</h1>
         </div>
-        <div className="bg-orange-400/30 backdrop-blur-xl rounded-md shadow-custom overflow-hidden mb-6 p-6 animate-fade-in
-            backdrop-blur-xl border border-white/30 shadow-inner"
+        <div className="rounded-md shadow-custom overflow-hidden mb-6 p-6 animate-fade-in
+            bg-gradient-to-br from-orange-500/90 via-amber-500/80 to-orange-400/70 backdrop-blur-xl border border-white/10"
         >
             {/* Create Product Modal Button */}
             <div className='flex justify-end'>
                 <button
                     onClick={() => setOpenCreateModal(true)}
-                    className="mb-4 rounded-md bg-green-600 px-4 py-3 text-sm font-medium text-white 
+                    className="mb-4 rounded-md bg-green-600 px-4 py-3 text-md font-medium text-white 
                             hover:bg-green-800 focus:outline-none border border-white/30"
                 >
-                    Add New Product
+                    Add Product
                 </button>
             </div>
 
@@ -84,7 +84,7 @@ export default function Product() {
             <Modal
                 open={openCreateModal}
                 onClose={() => setOpenCreateModal(false)}
-                title="Add New Product"
+                title="Add Product"
                 subtitle="Fill the form to add your product"
             >
                 <ProductCreateForm 

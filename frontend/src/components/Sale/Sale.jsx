@@ -75,9 +75,9 @@ export default function Sale() {
     }, [reload]);
 
     return <>
-        <div className="flex items-center mb-6">
-            <i className="fas fa-cart-shopping text-white text-2xl mr-3"></i>
-            <h1 className="text-2xl font-bold text-white">Sales</h1>
+        <div className="flex items-center mb-6 text-orange-500">
+            <i className="fas fa-cart-shopping text-2xl mr-3"></i>
+            <h1 className="text-2xl font-bold">Sales</h1>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-8">
