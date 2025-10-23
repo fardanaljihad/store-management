@@ -1,11 +1,12 @@
 import { useLocalStorage } from "react-use";
-import { alertConfirm, alertError, alertSuccess } from "../../lib/alert.js";
+import { alertConfirm, alertError, alertSuccess, alertWarning } from "../../lib/alert.js";
 import { productList } from "../../lib/api/ProductApi.js";
 import ProductCard from "../Product/ProductCard";
 import { useEffect, useState } from "react";
 import { useImmer } from "use-immer";
 import { orderCreate } from "../../lib/api/OrderApi.js";
 import OrderLineItem from "./OrderLineItem.jsx";
+import { formatNumber } from "../../lib/utils.js";
 
 export default function Sale() {
 
@@ -19,6 +20,8 @@ export default function Sale() {
     const discount = Math.round(subtotal * 0.0);
     const tax = Math.round(subtotal * 0.11);
     const total = subtotal - discount + tax;
+
+    const [cash, setCash] = useState("");
 
     function handleAddToCart(product, quantity) {
         setOrderLineItems((draft) => {
@@ -46,11 +49,16 @@ export default function Sale() {
             return;
         }
 
+        if (cash < total) {
+            await alertWarning("Oops! The cash entered isn't enough to complete the payment");
+            return;
+        }
+
         const response = await orderCreate(token, { username, orderLineItems });
         const responseBody = await response.json();
 
         if (response.status === 200) {
-            await alertSuccess(responseBody.message);
+            await alertSuccess(`${responseBody.message}. Thank you! The change is Rp${formatNumber(cash - total)}`);
             setReload(!reload);
         } else {
             await alertError(responseBody.errors);
@@ -70,6 +78,7 @@ export default function Sale() {
 
     useEffect(() => {
         setOrderLineItems([]);
+        setCash("");
         fetchProducts();
     }, [reload]);
 
@@ -107,6 +116,8 @@ export default function Sale() {
                 discount={discount}
                 tax={tax}
                 total={total}
+                cash={cash}
+                setCash={setCash}
                 handleOrderSubmit={handleOrderSubmit}
             />
         </div>

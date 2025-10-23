@@ -1,6 +1,7 @@
-import { formatNumber } from "../../lib/utils.js";
+import { useState } from "react";
+import { formatNumber, parseNumber } from "../../lib/utils.js";
 
-export default function OrderLineItem({ orderLineItems, setOrderLineItems, subtotal, discount, tax, total, handleOrderSubmit }) {
+export default function OrderLineItem({ orderLineItems, setOrderLineItems, subtotal, discount, tax, total, cash, setCash, handleOrderSubmit }) {
 
     function increaseQuantity(productId) {
         setOrderLineItems(draft => {
@@ -133,6 +134,21 @@ export default function OrderLineItem({ orderLineItems, setOrderLineItems, subto
                 <div className="flex justify-between text-black font-semibold text-base border-t border-white/20 pt-2">
                     <span>Total</span>
                     <span>Rp{formatNumber(total)}</span>
+                </div>
+
+                <div className="pt-3 border-t border-white/20">
+                    <label htmlFor="cash" className="block text-sm font-medium text-black/80 mb-1">
+                        Cash
+                    </label>
+                    <input
+                        id="cash"
+                        type="text"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none 
+                                focus:ring-2 focus:ring-orange-500 text-black"
+                        placeholder="Rp5.999"
+                        value={formatNumber(cash)}
+                        onChange={(e) => setCash(parseNumber(e.target.value))}
+                    />
                 </div>
 
                 <button
