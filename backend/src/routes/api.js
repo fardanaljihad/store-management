@@ -26,7 +26,7 @@ categoryRouter.delete('/api/categories/:id', categoryController.deleteCategory);
 const productRouter = express.Router();
 productRouter.use(authMiddleware);
 productRouter.post('/api/products', permittedRoles(["MANAGER"]), productController.create);
-productRouter.get('/api/products', productController.getAll);
+productRouter.get('/api/products', productController.search);
 productRouter.get('/api/products/:id', productController.get);
 productRouter.patch('/api/products/:id', productController.update);
 productRouter.delete('/api/products/:id', permittedRoles(["MANAGER"]), productController.del);

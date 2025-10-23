@@ -15,11 +15,11 @@ export const productCreate = async (token, {name, price, stock, categoryId}) => 
     });
 }
 
-export const productList = async (token, { page, limit, categoryId, name } = {}) => {
+export const productList = async (token, { page, size, categoryId, name } = {}) => {
     const url = new URL(`${import.meta.env.VITE_API_PATH}/products`);
 
     if (page) url.searchParams.append('page', page);
-    if (limit) url.searchParams.append('limit', limit);
+    if (size) url.searchParams.append('size', size);
     if (categoryId) url.searchParams.append('category_id', categoryId);
     if (name) url.searchParams.append('name', name);
 

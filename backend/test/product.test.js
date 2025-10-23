@@ -119,9 +119,9 @@ describe('GET /api/products', function() {
         expect(result.body.data.length).toBeGreaterThan(0);
 
         expect(result.body.pagination).toMatchObject({
-            total: expect.any(Number),
             page: 1,
-            limit: 10
+            total_item: expect.any(Number),
+            total_page: expect.any(Number)
         });
     });
 
@@ -151,9 +151,9 @@ describe('GET /api/products', function() {
         });
 
         expect(result.body.pagination).toMatchObject({
-            total: expect.any(Number),
             page: 1,
-            limit: 10
+            total_item: expect.any(Number),
+            total_page: expect.any(Number)
         });
     });
 
@@ -183,9 +183,9 @@ describe('GET /api/products', function() {
         });
 
         expect(result.body.pagination).toMatchObject({
-            total: expect.any(Number),
             page: 1,
-            limit: 10
+            total_item: expect.any(Number),
+            total_page: expect.any(Number)
         });
     });
 });

@@ -1,7 +1,6 @@
 import { useLocalStorage } from "react-use";
 import { alertConfirm, alertError, alertSuccess } from "../../lib/alert.js";
 import { productList } from "../../lib/api/ProductApi.js";
-import { formatNumber } from "../../lib/utils.js";
 import ProductCard from "../Product/ProductCard";
 import { useEffect, useState } from "react";
 import { useImmer } from "use-immer";

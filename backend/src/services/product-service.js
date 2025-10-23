@@ -32,30 +32,34 @@ const create = async (request) => {
     });
 }
 
-const getAll = async (request) => {
-    const query = validate(getAllProductsValidation, request);
-    const page = query.page;
-    const limit = query.limit;
-    const category_id = query.category_id;
-    const name = query.name;
+const search = async (request) => {
+    request = validate(getAllProductsValidation, request);
 
-    const skip = (query.page - 1) * query.limit;
+    const skip = (request.page - 1) * request.size;
 
-    const where = {};
-    if (category_id) {
-        where.category_id = category_id;
+    const filters = [];
+    if (request.category_id) {
+        filters.push({
+            category_id: {
+                equals: request.category_id
+            }
+        })
     }
-    if (name) {
-        where.name = {
-            contains: name,
-            // mode: "insensitive"
-        };
+
+    if (request.name) {
+        filters.push({
+            name: {
+                contains: request.name
+            } 
+        })
     }
 
     const products = await prismaClient.product.findMany({
-        where,
-        skip,
-        take: limit,
+        where: {
+            AND: filters
+        },
+        take: request.size,
+        skip: skip,
         select: {
             id: true,
             name: true,
@@ -65,12 +69,18 @@ const getAll = async (request) => {
         }
     });
 
+    const totalItems = await prismaClient.product.count({
+        where: {
+            AND: filters
+        }
+    })
+
     return {
         data: products,
         pagination: {
-            total: products.length,
-            page: page,
-            limit: limit
+            page: request.page,
+            total_item: totalItems,
+            total_page: Math.ceil(totalItems / request.size)
         }
     }
 }
@@ -186,7 +196,7 @@ const del = async (id) => {
 
 export default {
     create,
-    getAll,
+    search,
     get,
     update,
     del

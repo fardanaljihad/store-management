@@ -9,7 +9,7 @@ const createProductValidation = Joi.object({
 
 const getAllProductsValidation = Joi.object({
     page: Joi.number().integer().min(1).default(1),
-    limit: Joi.number().integer().min(1).default(10),
+    size: Joi.number().integer().min(1).default(10),
     category_id: Joi.number().integer().min(1).optional(),
     name: Joi.string().max(100).optional(),
 });
